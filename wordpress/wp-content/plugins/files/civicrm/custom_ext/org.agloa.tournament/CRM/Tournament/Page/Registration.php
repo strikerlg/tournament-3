@@ -2,59 +2,180 @@
 
 require_once 'CRM/Core/Page.php';
 require_once 'api/class.api.php';
+class TournamentObject{	
+	/**
+	 *
+	 *
+	 * @var bool
+	 */
+	protected $is_error;
+	/**
+	 *
+	 *
+	 * @var string
+	 */
+	protected $error_message;
+	
+	function __construct(){
+		$this->is_error = 0;
+	}	
+	
+	private static $tournament_event_type_id;
+	public static function tournament_event_type_id() {
+		if (!isset($tournament_event_type_id)) {			
+			$tournament_event_type_id = getOptionValue('event_type', 'Tournament');
+		}
+		return $tournament_event_type_id;
+	}	
+	
+	private static $billing_contact_relationship_type_id;
+	public static function billing_contact_relationship_type_id() {
+		if (!isset($billing_contact_relationship_type_id)) {	
+			$api = new civicrm_api3();
+				
+			$apiParams = array( 'name_a_b' => 'Billing Contact for', 'is_active' => 1);
+			
+			if ($api->relationship_type->get($apiParams)) {
+				$billing_contact_relationship_type_id = $api->values[0]->id;
+			} else {
+				$billing_contact_relationship_type_id = $api->error_message();
+			}		
+		}
+		return $billing_contact_relationship_type_id;
+	}	
+	
+	public static function get_contact($contact_id){
+		$apiParams = array('id' => $contact_id);//var_dump($apiParams); die('48');
+		$api = new civicrm_api3();
+		if ($api->Contact->get($apiParams)) {
+			return $api->values[0];
+		} else {
+			return $api->error_message();
+		}
+	}
+	
+	public static function get_billing_organization($contact){//var_dump($contact); die('57');
+		$apiParams = array('contact_id_a' => $contact->id
+				, 'relationship_type_id' => TournamentObject::billing_contact_relationship_type_id()
+				, 'is_active' => 1
+				, 'options' => array( 'sort' => 'start_date DESC')
+		); //var_dump($apiParams); die('62');
+		
+		$api = new civicrm_api3();
+		if ($api->relationship->get($apiParams)) {//var_dump($api->values[0]); die('65');
+			$orgID = $api->values[0]->contact_id_b; //var_dump($orgID); die('66');
+			if (isset($orgID))
+			{
+				$org = TournamentObject::get_contact($orgID); //var_dump($org); die('67');
+				return $org;
+			} else {
+				return null;
+			}
+		} else {
+			return $api->error_message();
+		}
+	}
+	
+	public static function getOptionValue($optionGroupName, $optionValueName){
+		$option_group_id = getActiveNamedTableValue('option_group', $optionGroupName, 'id');
+		$params = array('option_group_id' => $option_group_id);
+		return getActiveNamedTableValue('option_value', $optionValueName, 'value', $params);
+	}
+	
+	public static function getActiveNamedTableValue($table, $name, $valueKey = 'value', $params = null) {
+		$api = new civicrm_api3();
+			
+		$apiParams = array( 'name' => $name, 'is_active' => 1);
+			
+		if (isset($params)) $apiParams = array_merge($apiParams, $params);
+	
+		if ($api->$table->get($apiParams)) {
+			$result = $api->values[0];
+		} else {
+			return $api->error_message();
+		}
+	
+		if (is_array($result)) foreach($result['values'] as $value) $result_value = $value[$valueKey];
+		else $result_value = $result->$valueKey;
+		return $result_value;
+	}
+}
+
+class Tournament extends TournamentObject {
+	/**
+	 *
+	 *
+	 * @var $event
+	 */
+	public $event;
+	function __construct(){	
+		parent::__construct();	
+		$api = new civicrm_api3();
+		
+		// get current tournament, i.e., latest active event of type 'Tournament'
+		$apiParams = array(
+				'event_type_id' => $tournament_event_type_id
+				, 'is_active' => 1
+				, 'options' => array( 'sort' => 'start_date DESC')
+		);
+		
+		$table = 'Event';
+		if ($api->$table->get($apiParams)) {
+			$this->event = $api->values[0];
+		} else {
+			$this->is_error = 1;
+			$this->error_message = $api->error_message();
+		}
+	}
+}
+
+class BillingContact extends TournamentObject{	
+	/**
+	 *
+	 *
+	 * @var $tournament
+	 */
+	public $tournament;
+	/**
+	 *
+	 *
+	 * @var contact
+	 */
+	public $contact;
+	/**
+	 *
+	 *
+	 * @var organization
+	 */
+	public $organization;
+	
+	function __construct($contact_id) {
+		//print "In BaseClass constructor\n";
+		//var_dump($contact_id); die('46');
+		parent::__construct();
+		
+		$this->tournament = new Tournament();
+		$this->contact = TournamentObject::get_contact($contact_id);
+		$this->organization = TournamentObject::get_billing_organization($this->contact);		
+	}
+}
 
 class CRM_Tournament_Page_Registration extends CRM_Core_Page {
   public function run() {
-    $tournament_event_type_id = $this->getOptionValue('event_type', 'Tournament');
-    
-    $api = new civicrm_api3();
-    // get current tournament, i.e., latest active event of type 'Tournament'
-    $apiParams = array(
-        'event_type_id' => $tournament_event_type_id
-	      , 'is_active' => 1
-      , 'options' => array( 'sort' => 'start_date DESC')
-    );
-
-    $table = 'Event';
-    if ($api->$table->get($apiParams)) {
-      $result = $api->values[0];
-    } else {
-      echo $api->errorMsg();
-      return;
-    }  
-    $this->assign('current_event', $result);
-    
-    // Get logged in user
-    $session = CRM_Core_Session::singleton();
-    $userId = $session->get('userID');
-    
-    $apiParams = array('id' => $userId);
-    $table = 'Contact';
-    if ($api->$table->get($apiParams)) {
-    	$result = $api->values[0];
-    } else {
-    	echo $api->errorMsg();
-      return;
-    }
-    $current_user = $result;
-
-    // registrar is current user, unless admin is using cid argument
+    // billing contact is current user, unless admin is using cid argument
     if (isset($_REQUEST["cid"])) {
-      $contact_id = $_REQUEST["cid"];
-      $apiParams = array('id' => $contact_id);
-      if ($api->$table->get($apiParams)) {
-        $result = $api->values[0];
-      } else {
-        echo $api->errorMsg();
-      }
-      $registrar = $result;
+    	$billing_contact_id = $_REQUEST["cid"];
+    } else {
+    	// Get logged in user
+    	$session = CRM_Core_Session::singleton();
+    	$billing_contact_id = $session->get('userID');
     }
-    else 
-      $registrar = $current_user;
     
-    $this->assign('registrar', $registrar);
+    $billing_contact = new BillingContact($billing_contact_id); //var_dump($billing_contact); die('128');
+    
+    $this->assign('billing_contact', $billing_contact);
 
-    $this->registration_group_contact_get($contact_id); 
+    //$this->registration_group_contact_get($contact_id); 
 
     // get assigned registration groups : search for contact in groups of type Registration group
     // Find all of the groups contacts
@@ -106,29 +227,5 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     }
 
     return $result;
-  }
-  
-  function getOptionValue($optionGroupName, $optionValueName){
-  	$option_group_id = $this->getActiveNamedTableValue('option_group', $optionGroupName, 'id');
-  	$params = array('option_group_id' => $option_group_id);  	
-  	return $this->getActiveNamedTableValue('option_value', $optionValueName, 'value', $params);
-  }
-  
-  function getActiveNamedTableValue($table, $name, $valueKey = 'value', $params = null) {  	
-  	$api = new civicrm_api3();
-  	
-  	$apiParams = array( 'name' => $name, 'is_active' => 1);
-  	
-    if (isset($params)) $apiParams = array_merge($apiParams, $params); 
-    
-    if ($api->$table->get($apiParams)) {
-    	$result = $api->values[0];
-    } else {
-    	return $api->errorMsg();
-    }
-
-    if (is_array($result)) foreach($result['values'] as $value) $result_value = $value[$valueKey];
-    else $result_value = $result->$valueKey;
-    return $result_value;
   }
 }
