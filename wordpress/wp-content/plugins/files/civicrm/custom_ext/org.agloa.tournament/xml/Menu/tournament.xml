@@ -2,50 +2,50 @@
 <menu>
   <item>
     <path>civicrm/tournament</path>
-    <page_callback>CRM_Tournament_Page_Tournament</page_callback>
-    <title>Tournament</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <page_callback>CRM_Tournament_Page_DashBoard</page_callback>
+    <title>Tournament Dashboard</title>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/teams</path>
     <page_callback>CRM_Tournament_Form_Teams</page_callback>
     <title>Teams</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/registration</path>
     <page_callback>CRM_Tournament_Page_Registration</page_callback>
     <title>Registration</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/scheduling</path>
     <page_callback>CRM_Tournament_Page_Scheduling</page_callback>
     <title>Scheduling</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/admin</path>
     <page_callback>CRM_Tournament_Page_Administration</page_callback>
     <title>Administration</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/BillingContact</path>
     <page_callback>CRM_Tournament_Form_BillingContact</page_callback>
     <title>Billing Contact</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/register</path>
     <page_callback>CRM_Tournament_Form_Register</page_callback>
     <title>Register</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
     <path>civicrm/tournament/info</path>
     <page_callback>CRM_Tournament_Page_TournamentInfo</page_callback>
     <title>TournamentInfo</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
 </menu>
