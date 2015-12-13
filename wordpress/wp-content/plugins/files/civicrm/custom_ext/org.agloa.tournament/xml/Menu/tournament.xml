@@ -5,8 +5,28 @@
     <page_callback>CRM_Tournament_Page_DashBoard</page_callback>
     <title>Tournament Dashboard</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
+    <page_type>1</page_type>
+    <weight>800</weight>
   </item>
   <item>
+    <path>civicrm/tournament/info</path>
+    <page_callback>CRM_Tournament_Page_TournamentInfo</page_callback>
+    <title>TournamentInfo</title>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/tournament/register</path>
+    <page_callback>CRM_Tournament_Controller_Registration</page_callback>
+    <title>Tournament Registration</title>
+    <access_callback>1</access_callback>
+    <is_public>true</is_public>
+    <is_ssl>true</is_ssl></item>
+  <item>
+    <path>civicrm/tournament/confirm</path>
+    <page_callback>CRM_Tournament_Form_Registration_ParticipantConfirm</page_callback>
+    <title>Registration_ParticipantConfirm</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item><item>
     <path>civicrm/tournament/teams</path>
     <page_callback>CRM_Tournament_Form_Teams</page_callback>
     <title>Teams</title>
@@ -36,16 +56,5 @@
     <title>Billing Contact</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
-  <item>
-    <path>civicrm/tournament/register</path>
-    <page_callback>CRM_Tournament_Form_Register</page_callback>
-    <title>Register</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/tournament/info</path>
-    <page_callback>CRM_Tournament_Page_TournamentInfo</page_callback>
-    <title>TournamentInfo</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
+  
 </menu>

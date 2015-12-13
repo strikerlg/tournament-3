@@ -1,0 +1,3 @@
+<?php
+class CRM_Tournament_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Registration_ParticipantConfirm {
+}
