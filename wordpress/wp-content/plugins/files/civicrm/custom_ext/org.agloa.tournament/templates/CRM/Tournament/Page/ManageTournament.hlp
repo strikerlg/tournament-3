@@ -1,0 +1,44 @@
+{htxt id='icalendar-title'}
+  {ts}ICalendar Downloads and Feeds{/ts}
+{/htxt}
+{htxt id='icalendar'}
+{capture assign=icalPage}{crmURL p='civicrm/tournament/ical' q="reset=1&list=1"}{/capture}
+{capture assign=rssFeed}{crmURL p='civicrm/tournament/ical' q="reset=1&list=1&rss=1"}{/capture}
+{capture assign=htmlFeed}{crmURL p='civicrm/tournament/ical' q="reset=1&list=1&html=1"}{/capture}
+{capture assign=icalPageExample}{crmURL p='civicrm/tournament/ical' q="reset=1&list=1&type=3&start=20070101"}{/capture}
+<p>
+{ts}iCalendar is a standard format for representing information about calendaring and scheduling. Tournament allows you to output your current and upcoming 'public' tournaments in the iCalendar format - so this information can be shared with other iCalendar-enabled applications.{/ts}</p>
+
+<p>{ts}Depending on how you want to use the iCalendar data - you can:{/ts}</p>
+<ul>
+<li>{ts}Download an iCalendar file (with a *.ics extension) to your local computer.{/ts}</li>
+<li>{ts}Access the data using an HTTP GET request from a specific URL. (This is the 'ICAL' icon on the Manage Tournaments page.){/ts}</li>
+</ul>
+
+<p>{ts}The iCalendar Feed URL for Tournament on this site:{/ts}</p>
+<pre>
+{$icalPage}
+</pre>
+<p>{ts}By default, both methods get all tournaments whose starting date is greater than or equal to the current date. However, you can modify this by passing additional parameters in the URL:{/ts}</p>
+<ul>
+<li>{ts}start=YYYYMMDD - Specify a different starting date range for the tournaments to be listed.{/ts}</li>
+<li>{ts}type=N - Specify a particular Event Type using the event_type_id value. (You can find these values by browsing the listing at Administer &raquo; Tournament &raquo; Event Types.){/ts}</li>
+</ul>
+<p>{ts}EXAMPLE: Given the default event types, this URL will retrieve all tournaments with start dates on or after January 1, 2007 whose tournament type is 'Fundraiser':{/ts}</p>
+<pre>
+{$icalPageExample}
+</pre>
+
+<p><strong>{ts}HTML Listing{/ts}</strong><br />
+{ts}Tournament provides a page which lists your current and future public tournaments in a table layout for display in a browser. Point people to this page using the following URL:{/ts}</p>
+<pre>
+{$htmlFeed}
+</pre>
+<p>{ts}You can add links to this page in your Drupal or Joomla menus and on any content page. You can also use the additional parameters shown above to filter the tournaments included on the page.{/ts}</p>
+<p><strong>{ts}RSS 2.0 Feeds{/ts}</strong><br />
+{ts}Tournament also creates an RSS 2.0 formatted feed which can be subscribed to people using RSS readers and can be displayed in most modern browsers. The RSS Feed URL for Tournament on this site:{/ts}</p>
+<pre>
+{$rssFeed}
+</pre>
+<p>{ts}You can also use the additional parameters shown above to filter the tournaments included in the RSS feed.{/ts}</p>
+{/htxt}

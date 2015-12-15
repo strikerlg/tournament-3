@@ -4,7 +4,7 @@
     <path>civicrm/tournament</path>
     <page_callback>CRM_Tournament_Page_DashBoard</page_callback>
     <title>Tournament Dashboard</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
+    <access_arguments>administer CiviEvent</access_arguments>
     <page_type>1</page_type>
     <weight>800</weight>
   </item>
@@ -43,7 +43,16 @@
     <access_arguments>view event participants</access_arguments>
     <is_public>true</is_public>
     <weight>0</weight>
-  </item><item>
+  </item>
+  <item>
+    <path>civicrm/admin/tournament</path>
+    <page_callback>CRM_Tournament_Page_ManageTournament</page_callback>
+    <title>Manage Tournaments</title>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
+    <desc>Create and edit tournament configuration including times, locations, online registration forms, and fees. Links for iCal and RSS syndication.</desc>
+    <adminGroup>Tournament</adminGroup>
+    <icon>admin/small/event_manage.png</icon>
+    <weight>370</weight></item><item>
     <path>civicrm/tournament/teams</path>
     <page_callback>CRM_Tournament_Form_Teams</page_callback>
     <title>Teams</title>
@@ -59,12 +68,6 @@
     <path>civicrm/tournament/scheduling</path>
     <page_callback>CRM_Tournament_Page_Scheduling</page_callback>
     <title>Scheduling</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/tournament/admin</path>
-    <page_callback>CRM_Tournament_Page_Administration</page_callback>
-    <title>Administration</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
