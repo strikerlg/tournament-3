@@ -54,6 +54,11 @@ class TournamentObject{
 		}
 	}
 	
+	public static function get_active_relations() {
+		$api = new civicrm_api3();
+		return $api->Relationship->get();
+	}
+	
 	public static function get_billing_organization($contact){//var_dump($contact); die('57');
 		$apiParams = array('contact_id_a' => $contact->id
 				, 'relationship_type_id' => TournamentObject::billing_contact_relationship_type_id()
@@ -172,6 +177,8 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     $billing_contact = new BillingContact($billing_contact_id); //var_dump($billing_contact); die('128');
     
     $this->assign('billing_contact', $billing_contact);
+    
+    $relations = TournamentObject::get_active_relations();
 
     //$this->registration_group_contact_get($contact_id); 
 

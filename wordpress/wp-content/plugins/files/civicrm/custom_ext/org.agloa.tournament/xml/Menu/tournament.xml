@@ -2,7 +2,7 @@
 <menu>
   <item>
     <path>civicrm/tournament</path>
-    <page_callback>CRM_Tournament_Page_DashBoard</page_callback>
+    <page_callback>CRM_Tournament_Page_Registration</page_callback>
     <title>Tournament Dashboard</title>
     <access_arguments>administer CiviCRM</access_arguments>
     <page_type>1</page_type>
