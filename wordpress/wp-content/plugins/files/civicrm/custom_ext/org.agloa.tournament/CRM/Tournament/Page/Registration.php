@@ -150,8 +150,6 @@ class BillingContact extends TournamentObject{
 	public $organization;
 	
 	function __construct($contact_id) {
-		//print "In BaseClass constructor\n";
-		//var_dump($contact_id); die('46');
 		parent::__construct();
 		
 		$this->tournament = new Tournament();
@@ -181,7 +179,7 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     // Find all of the groups contacts
 
     // Example: Set the page-title dynamically; alternatively, declare a static title in xml/Menu/*.xml
-    CRM_Utils_System::setTitle(ts('Registration'));
+    //CRM_Utils_System::setTitle(ts('Registration'));
 
     parent::run();
   }

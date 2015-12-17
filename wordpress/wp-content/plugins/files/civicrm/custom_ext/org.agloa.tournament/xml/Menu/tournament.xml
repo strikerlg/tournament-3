@@ -53,21 +53,14 @@
     <adminGroup>Tournament</adminGroup>
     <icon>admin/small/event_manage.png</icon>
     <weight>370</weight></item><item>
+    <path>civicrm/tournament/registration</path>
+    <page_callback>CRM_Tournament_Page_Registration</page_callback>
+    <title>Registration Dashboard</title>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
+  </item><item>
     <path>civicrm/tournament/teams</path>
     <page_callback>CRM_Tournament_Form_Teams</page_callback>
     <title>Teams</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/tournament/registration</path>
-    <page_callback>CRM_Tournament_Page_Registration</page_callback>
-    <title>Registration</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
-  <item>
-    <path>civicrm/tournament/scheduling</path>
-    <page_callback>CRM_Tournament_Page_Scheduling</page_callback>
-    <title>Scheduling</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
@@ -76,5 +69,12 @@
     <title>Billing Contact</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
+  <item>
+    <path>civicrm/tournament/scheduling</path>
+    <page_callback>CRM_Tournament_Page_Scheduling</page_callback>
+    <title>Scheduling</title>
+    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
+  </item>
+  
   
 </menu>
