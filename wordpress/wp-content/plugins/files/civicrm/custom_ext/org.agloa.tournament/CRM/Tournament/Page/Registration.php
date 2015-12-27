@@ -228,6 +228,16 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     	$this->assign('orgEditLink',
     		"admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={$this->billing_contact->organization['id']}");
     
+    $memberProfile = $this->getProfileID('MemberProfile');
+    if (isset($memberProfile)){
+    	$this->assign('pMemberAdd',"civicrm/profile/create");
+    	$this->assign('qMemberAdd', "gid={$memberProfile}&reset=1");
+    }
+    else{
+    	$this->assign('pMemberAdd',"civicrm/contact/add");
+    	$this->assign('qMemberAdd', "ct=Individual&reset=1");
+    }
+    
 
     // Example: Set the page-title dynamically; alternatively, declare a static title in xml/Menu/*.xml
     //CRM_Utils_System::setTitle(ts('Registration'));
