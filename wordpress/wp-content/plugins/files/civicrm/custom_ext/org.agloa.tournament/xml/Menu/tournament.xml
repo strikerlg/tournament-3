@@ -52,12 +52,15 @@
     <desc>Create and edit tournament configuration including times, locations, online registration forms, and fees. Links for iCal and RSS syndication.</desc>
     <adminGroup>Tournament</adminGroup>
     <icon>admin/small/event_manage.png</icon>
-    <weight>370</weight></item><item>
+    <weight>370</weight>
+  </item>
+  <item>
     <path>civicrm/tournament/registration</path>
     <page_callback>CRM_Tournament_Page_Registration</page_callback>
     <title>Registration Dashboard</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item><item>
+  </item>
+  <item>
     <path>civicrm/tournament/teams</path>
     <page_callback>CRM_Tournament_Form_Teams</page_callback>
     <title>Teams</title>
@@ -75,6 +78,10 @@
     <title>Scheduling</title>
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
-  
-  
+  <item>
+    <path>civicrm/tournament/newmember</path>
+    <page_callback>CRM_Tournament_Page_Registration_NewMemberProcess</page_callback>
+    <title>Registration_NewMemberProcess</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

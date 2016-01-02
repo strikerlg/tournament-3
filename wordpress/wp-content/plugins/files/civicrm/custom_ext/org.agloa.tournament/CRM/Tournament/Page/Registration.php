@@ -97,6 +97,8 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
 
     $this->billing_contact = new BillingContact($billing_contact_id); //var_dump($billing_contact); //die('128');
     if ($this->billing_contact->is_error) var_dump($this->billing_contact);
+    
+    $_SESSION['billing_contact'] = $this->billing_contact;
      
     $this->assign('billing_contact', $this->billing_contact);
     

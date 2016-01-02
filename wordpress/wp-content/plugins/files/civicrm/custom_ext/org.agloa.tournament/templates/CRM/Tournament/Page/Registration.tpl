@@ -10,14 +10,16 @@
 <h4>Welcome <a href={$indEditLink} target="_blank">{$billing_contact->contact.display_name}</a>.</h4>
 
 <ul>
-<li>Update <a href={$indEditLink} target="_blank">your individual contact information</a>.</li>
-<li>Update <a href={$orgEditLink} target="_blank">your organization's contact information</a> ({$billing_contact->organization.display_name}).</li>
-{* <li>Register participants for <a href="civicrm/event/register&reset=1&id={$billing_contact->tournament->event.id}" target="_blank">{$billing_contact->tournament->event.title}</a>.</li>*}
+<li>Update <a href={$indEditLink}>your individual contact information</a>.</li>
+<li>Update <a href={$orgEditLink}>your organization's contact information</a> ({$billing_contact->organization.display_name}).</li>
+{* <li>Register participants for <a href="civicrm/event/register&reset=1&id={$billing_contact->tournament->event.id}">{$billing_contact->tournament->event.title}</a>.</li>*}
 </ul>
-<p>These members (below) are currently 'related' to {$billing_contact->organization.display_name}.</P>
+<h5>(Coming soon: a list of participants from 2015 to get you started for 2016.)</h5>
+<div style="display:none">
+<p>These members (below) are currently 'related' to {$billing_contact->organization.display_name}.</p>
 
   {capture assign=crmURLI}{crmURL p=$pMemberAdd q=$qMemberAdd}{/capture}
-  {ts 1=$crmURLI}Add a <a href='%1' target='_blank'>New Member</a>{/ts} for {$billing_contact->organization.display_name}.
+  {ts 1=$crmURLI}Add a <a href='%1'>New Member</a>{/ts} for {$billing_contact->organization.display_name}.
 
 {assign var="rows" value=$billing_contact->members}
 {if $rows}
@@ -61,6 +63,8 @@
 {/if}
 
   {capture assign=crmURLI}{crmURL p=$pMemberAdd q=$qMemberAdd}{/capture}
-  {ts 1=$crmURLI}Add a <a href='%1' target='_blank'>New Member</a>{/ts} for {$billing_contact->organization.display_name}.
+  {ts 1=$crmURLI}Add a <a href='%1'>New Member</a>{/ts} for {$billing_contact->organization.display_name}.
+
+</div>
 </div>
 {/strip}
