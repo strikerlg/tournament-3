@@ -1,0 +1,1 @@
+{include file="CRM/Event/Form/Registration/Register.tpl"}
