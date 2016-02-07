@@ -49,7 +49,6 @@ class BillingContact extends TournamentObject{
 		$this->organization = $this->get_billing_organization();
 		$this->members = $this->get_members($this->organization);
 		$this->registrationProfiles = $this->get_registrationProfiles($contact_id);
-		$_SESSION['registrationProfiles'] = $this->registrationProfiles;
 	}
 
 	function get_billing_organization(){

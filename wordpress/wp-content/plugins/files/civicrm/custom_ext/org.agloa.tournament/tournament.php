@@ -23,11 +23,11 @@ function tournament_post($op, $objectName, $objectId, &$objectRef) {
 	}
 }
 
-	/**
-	 * Implements hook_civicrm_config().
-	 *
-	 * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
-	 */
+/**
+ * Implements hook_civicrm_config().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
+ */
 function tournament_civicrm_config(&$config) {
 	_tournament_civix_civicrm_config($config);
 }
@@ -165,32 +165,32 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'url' => $url,
 			'permission' => 'add contacts',
 	));
-	
-		$record = named_profile_get("Billing Organization Profile");
-		$id = $record["id"];
+
+	$record = named_profile_get("Billing Organization Profile");
+	$id = $record["id"];
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Billing Organizations', array('domain' => 'org.agloa.tournament')),
 			'name' => 'BillingOrganizations',
 			'url' => "civicrm/profile?gid={$id}",
-			'permission' => 'add contacts',
-	));
-	
+			'permission' => 'view all contacts',
+			));
+
 	$record = named_report_get("Preliminary Estimates Summary");
 	$id = $record["id"];
 	_tournament_civix_insert_navigation_menu($menu, "{$path}/BillingOrganizations", array(
 			'label' => ts('Preliminary Estimates', array('domain' => 'org.agloa.tournament')),
 			'name' => 'PreliminaryEstimates',
 			'url' => "civicrm/report/instance/{$id}?reset=1",
-	));
-	
+			));
+
 	$record = named_group_get("Billing Contacts");
 	$id = $record["id"];
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Billing Individuals', array('domain' => 'org.agloa.tournament')),
 			'name' => 'BillingContacts',
 			'url' => "civicrm/group/search?context=smog&gid={$id}&reset=1&force=1",
-			'permission' => 'add contacts',
-	));
+			'permission' => 'view all contacts',
+			));
 
 	$name = "Profiles";
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
@@ -199,11 +199,11 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'permission' => 'add contacts',
 			'separator' => 1,
 	));
-	
+
 	$path .= "/$name";
 
 	// add a menu item for each of the sesstion billing contact's profiles
-	$registrationProfiles  = $_SESSION['registrationProfiles'];
+	$registrationProfiles = $_SESSION['registrationProfiles'];
 
 	foreach ($registrationProfiles as $profile) {
 		$id = $profile["id"];
@@ -211,17 +211,17 @@ function tournament_civicrm_navigationMenu(&$menu) {
 		_tournament_civix_insert_navigation_menu($menu, $path, array(
 				'label' => ts($title, array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}",
-		));
+				));
 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles_{$id}", array(
 				'label' => ts("List", array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}_list",
 				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
-		));
+				));
 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles_{$id}", array(
 				'label' => ts("Add new", array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}_add",
 				'url' => "civicrm/profile/create?gid={$id}&reset=1",
-		));
+				));
 	}
 
 	_tournament_civix_navigationMenu($menu);

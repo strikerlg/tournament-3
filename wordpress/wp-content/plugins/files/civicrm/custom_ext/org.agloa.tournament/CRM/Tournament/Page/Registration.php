@@ -23,6 +23,7 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     
     $session = CRM_Core_Session::singleton();
     $session->set('billing_contact_id', $billing_contact_id);
+    $_SESSION['registrationProfiles'] = $this->billing_contact->registrationProfiles;
          
     $this->assign('billing_contact', $this->billing_contact);
     
