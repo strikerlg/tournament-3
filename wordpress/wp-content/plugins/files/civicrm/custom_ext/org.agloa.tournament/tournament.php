@@ -1,33 +1,35 @@
 <?php
 
 require_once 'tournament.civix.php';
+require_once 'util.php';
+
 
 /**
  * Implementation of hook_civicrm_post
  */
 function tournament_post($op, $objectName, $objectId, &$objectRef) {
-  switch ($objectName) {
-    case 'Contribution':
-      $file = '/tmp/contributions.log';
-      $message = strtr("Performed \"@op\" at @time on contribution #@id\n", array(
-        '@op' => $op,
-        '@time' => date('Y-m-d H:i:s'),
-        '@id' => $objectId,
-      ));
-      file_put_contents($file, $message, FILE_APPEND);
-      break;
-    default:
-      // nothing to do
-  }
+	switch ($objectName) {
+		case 'Contribution':
+			$file = '/tmp/contributions.log';
+			$message = strtr("Performed \"@op\" at @time on contribution #@id\n", array(
+					'@op' => $op,
+					'@time' => date('Y-m-d H:i:s'),
+					'@id' => $objectId,
+			));
+			file_put_contents($file, $message, FILE_APPEND);
+			break;
+		default:
+			// nothing to do
+	}
 }
 
-/**
- * Implements hook_civicrm_config().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
- */
+	/**
+	 * Implements hook_civicrm_config().
+	 *
+	 * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
+	 */
 function tournament_civicrm_config(&$config) {
-  _tournament_civix_civicrm_config($config);
+	_tournament_civix_civicrm_config($config);
 }
 
 /**
@@ -38,7 +40,7 @@ function tournament_civicrm_config(&$config) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
 function tournament_civicrm_xmlMenu(&$files) {
-  _tournament_civix_civicrm_xmlMenu($files);
+	_tournament_civix_civicrm_xmlMenu($files);
 }
 
 /**
@@ -47,7 +49,7 @@ function tournament_civicrm_xmlMenu(&$files) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function tournament_civicrm_install() {
-  _tournament_civix_civicrm_install();
+	_tournament_civix_civicrm_install();
 }
 
 /**
@@ -56,7 +58,7 @@ function tournament_civicrm_install() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
 function tournament_civicrm_uninstall() {
-  _tournament_civix_civicrm_uninstall();
+	_tournament_civix_civicrm_uninstall();
 }
 
 /**
@@ -65,7 +67,7 @@ function tournament_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function tournament_civicrm_enable() {
-  _tournament_civix_civicrm_enable();
+	_tournament_civix_civicrm_enable();
 }
 
 /**
@@ -74,7 +76,7 @@ function tournament_civicrm_enable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function tournament_civicrm_disable() {
-  _tournament_civix_civicrm_disable();
+	_tournament_civix_civicrm_disable();
 }
 
 /**
@@ -90,7 +92,7 @@ function tournament_civicrm_disable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
 function tournament_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _tournament_civix_civicrm_upgrade($op, $queue);
+	return _tournament_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -102,7 +104,7 @@ function tournament_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
 function tournament_civicrm_managed(&$entities) {
-  _tournament_civix_civicrm_managed($entities);
+	_tournament_civix_civicrm_managed($entities);
 }
 
 /**
@@ -115,7 +117,7 @@ function tournament_civicrm_managed(&$entities) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
 function tournament_civicrm_caseTypes(&$caseTypes) {
-  _tournament_civix_civicrm_caseTypes($caseTypes);
+	_tournament_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
@@ -129,7 +131,7 @@ function tournament_civicrm_caseTypes(&$caseTypes) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
 function tournament_civicrm_angularModules(&$angularModules) {
-_tournament_civix_civicrm_angularModules($angularModules);
+	_tournament_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -138,35 +140,89 @@ _tournament_civix_civicrm_angularModules($angularModules);
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
 function tournament_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _tournament_civix_civicrm_alterSettingsFolders($metaDataFolders);
+	_tournament_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
-/**
- * Functions below this ship commented out. Uncomment as required.
- *
-
-/**
- * Implements hook_civicrm_preProcess().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
- *
-function tournament_civicrm_preProcess($formName, &$form) {
-
-} // */
-
-/**
- * Implements hook_civicrm_navigationMenu().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
- *
 function tournament_civicrm_navigationMenu(&$menu) {
-  _tournament_civix_insert_navigation_menu($menu, NULL, array(
-    'label' => ts('The Page', array('domain' => 'org.agloa.tournament')),
-    'name' => 'the_page',
-    'url' => 'civicrm/the-page',
-    'permission' => 'access CiviReport,access CiviContribute',
-    'operator' => 'OR',
-    'separator' => 0,
-  ));
-  _tournament_civix_navigationMenu($menu);
-} // */
+	$path = NULL;
+	// 'civicrm'; //NULL
+
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Tournament', array('domain' => 'org.agloa.tournament')),
+			'name' => 'tournament',
+			'url' => '',
+			'permission' => 'add contacts',
+			'operator' => 'OR',
+			'separator' => 0,
+	));
+
+	$path = 'tournament';
+	$url = 'civicrm/' . $path;
+
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Dashboard', array('domain' => 'org.agloa.tournament')),
+			'name' => 'tournament_dashboard',
+			'url' => $url,
+			'permission' => 'add contacts',
+	));
+	
+		$record = named_profile_get("Billing Organization Profile");
+		$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Billing Organizations', array('domain' => 'org.agloa.tournament')),
+			'name' => 'BillingOrganizations',
+			'url' => "civicrm/profile?gid={$id}",
+			'permission' => 'add contacts',
+	));
+	
+	$record = named_report_get("Preliminary Estimates Summary");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, "{$path}/BillingOrganizations", array(
+			'label' => ts('Preliminary Estimates', array('domain' => 'org.agloa.tournament')),
+			'name' => 'PreliminaryEstimates',
+			'url' => "civicrm/report/instance/{$id}?reset=1",
+	));
+	
+	$record = named_group_get("Billing Contacts");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Billing Individuals', array('domain' => 'org.agloa.tournament')),
+			'name' => 'BillingContacts',
+			'url' => "civicrm/group/search?context=smog&gid={$id}&reset=1&force=1",
+			'permission' => 'add contacts',
+	));
+
+	$name = "Profiles";
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Your players, coaches, etc.', array('domain' => 'org.agloa.tournament')),
+			'name' => $name,
+			'permission' => 'add contacts',
+			'separator' => 1,
+	));
+	
+	$path .= "/$name";
+
+	// add a menu item for each of the sesstion billing contact's profiles
+	$registrationProfiles  = $_SESSION['registrationProfiles'];
+
+	foreach ($registrationProfiles as $profile) {
+		$id = $profile["id"];
+		$title = $profile["title"];
+		_tournament_civix_insert_navigation_menu($menu, $path, array(
+				'label' => ts($title, array('domain' => 'org.agloa.tournament')),
+				'name' => "Profiles_{$id}",
+		));
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles_{$id}", array(
+				'label' => ts("List", array('domain' => 'org.agloa.tournament')),
+				'name' => "Profiles_{$id}_list",
+				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
+		));
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles_{$id}", array(
+				'label' => ts("Add new", array('domain' => 'org.agloa.tournament')),
+				'name' => "Profiles_{$id}_add",
+				'url' => "civicrm/profile/create?gid={$id}&reset=1",
+		));
+	}
+
+	_tournament_civix_navigationMenu($menu);
+}

@@ -2,6 +2,7 @@
 
 require_once 'CRM/Core/Page.php';
 require_once 'api/class.api.php';
+require_once 'util.php';
 
 class TournamentObject{
 	/**
@@ -42,7 +43,106 @@ class TournamentObject{
 			$member = $this->get_contact($relation['contact_id_a']);
 			$members[$member['id']] = $member;
 		}
+		
+		// TODO: sort by sortname, e.g., array sort
 		return $members;
+	}
+	
+	function get_registrationProfiles($contact_id){
+		$aclGroups = $this->get_aclGroups($contact_id);
+		$registrationGroups = $this->get_registrationGroups($aclGroups);
+	
+		foreach ($registrationGroups as $group){
+			$group_id = $group["id"];
+			$apiParams = array("add_to_group_id" => $group_id
+					, "limit_listings_group_id" => $group_id
+					, "group_type" => "Individual"
+					, "is_active" => 1
+					, 'options' => array( 'sort' => 'created_date DESC', 'limit' => 1)
+			);
+				
+			$entity_name = "uf_group";
+			$result = $this->civicrm_api3_get($entity_name, $apiParams, 'getsingle');
+				
+			$profiles[$result["id"]] = $result;
+		}
+	
+		return $profiles;
+	}
+	
+	function get_aclGroups($contact_id, $is_active = 1, $params){
+		$contact_groups = $this->get_contact_groups($contact_id);
+		
+		foreach ($contact_groups as $contact_group) {
+			$groupID = $contact_group["group_id"];		
+			$apiParams = $this->params_merge($params,
+					 array("id" => $groupID, "group_type" => $this->access_control_group_type_id()
+					 		, "is_active" => $is_active, "is_hidden" => "0"));
+			
+			$entity_name = "Group";
+			$result = $this->civicrm_api3_get($entity_name, $apiParams);
+			
+			if (is_array($result)) foreach ($result as $group) $groups[$group["id"]] = $group;
+			else $groups[$result["id"]] = $result;
+		}
+		
+		return $groups;
+	}	
+	
+	function get_registrationGroups($aclGroups){ // test 93
+		$roles = $this->get_aclRoles($aclGroups);
+		foreach ($roles as $role){
+			$entity_id = $role["acl_role_id"]; // should be 39
+			$apiParams = array("entity_id" => $entity_id
+					, "deny" => 0, "object_table" => "civicrm_saved_search"
+					, "entity_table" => "civicrm_acl_role", "is_active" => 1);
+				
+			$entity_name = "Acl";
+			$result = $this->civicrm_api3_get($entity_name, $apiParams); // object_id should be 56
+				
+			$key = "id";
+			if (is_array($result)) foreach ($result as $record) $records[$record[$key]] = $record;
+			else $records[$result[$key]] = $result;
+		}
+
+		$acls = $records;
+		unset($records);
+		unset($result);
+		
+		$key = "id";
+		foreach($acls as $acl) {
+			$result = $this->civicrm_api3_get('Group', array($key => $acl["object_id"]));
+		
+			if (is_array($result)) foreach ($result as $record) $records[$record[$key]] = $record;
+			else $records[$result[$key]] = $result;
+		}
+		
+		return $records;
+	}
+	
+	function get_aclRoles($aclGroups){
+		foreach ($aclGroups as $group){
+			$entity_id = $group["id"];
+			$apiParams = array("entity_id" => $entity_id
+					, "entity_table" => "civicrm_group", "is_active" => 1);
+			
+			$entity_name = "Acl_Role";
+			$result = $this->civicrm_api3_get($entity_name, $apiParams);
+			
+			if (is_array($result)) foreach ($result as $record) $records[$record["id"]] = $record;
+			else $records[$result["id"]] = $result;
+		}
+
+		return $records;
+	}
+
+	function access_control_group_type_id() {
+		return $this->option_value("group_type", "Access Control");
+	}
+	
+	function get_contact_groups($contact_id, $status = "Added"){
+		$apiParams = array("contact_id" => $contact_id, "status" => $status);
+		return $this->civicrm_api3_get('Group_Contact', $apiParams);
 	}
 
 	function member_relationship_type_id() {

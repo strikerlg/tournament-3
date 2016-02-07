@@ -1,10 +1,13 @@
 <?php
 require_once 'CRM/Tournament/BillingContact.php';
 
+require_once 'util.php';
+
 class CRM_Tournament_Page_Registration extends CRM_Core_Page {
 	public $billing_contact;
 	
   public function run() {
+  	//var_dump($profile_id);
 //  	$smarty->debugging_ctrl = ($_SERVER['SERVER_NAME'] == 'localhost') ? 'URL' : 'NONE';
     // billing contact is current user, unless admin is using cid argument
     if (isset($_REQUEST["cid"])) {
@@ -18,9 +21,9 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     $this->billing_contact = new BillingContact($billing_contact_id); //var_dump($billing_contact); //die('128');
     if ($this->billing_contact->is_error) var_dump($this->billing_contact);
     
-    $_SESSION['billing_contact_id'] = $billing_contact_id;
-    //$_SESSION['billing_contact'] = $this->billing_contact;
-     
+    $session = CRM_Core_Session::singleton();
+    $session->set('billing_contact_id', $billing_contact_id);
+         
     $this->assign('billing_contact', $this->billing_contact);
     
     $baseURL = "admin.php?page=CiviCRM&q=";
@@ -40,7 +43,8 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
     	$this->assign('orgEditLink', $baseURL.
     		"civicrm/contact/view&reset=1&cid={$this->billing_contact->organization['id']}");
     
-    // TODO: how to get search results (members) to use this profile?
+    $this->assign('profileLinkBase', "{$baseURL}civicrm/profile");
+    
     $memberProfile = $this->getProfileID('Member Profile');
     if (isset($memberProfile)){
     	$this->assign('pMemberAdd',"civicrm/profile/create");

@@ -11,10 +11,29 @@
 		<li>Update <a href={$indEditLink}>your individual contact information</a>.</li>
 		<li>Update <a href={$orgEditLink}>your organization's contact information</a> ({$billing_contact->organization.display_name}).</li>
 		{* <li>Register participants for <a href="civicrm/event/register&reset=1&id={$billing_contact->tournament->event.id}">{$billing_contact->tournament->event.title}</a>.</li>*}
+		<li>You have access to 'contacts' (players, coaches, etc.) in these groups:
+		
+		{assign var="profiles" value=$billing_contact->registrationProfiles}
+		{if $profiles}
+			<li>	
+				<ol>
+					{foreach from=$profiles item=profile}
+						<li>{$profile.title}
+							<ul>
+								<li><a target="_blank" href="{$profileLinkBase}&gid={$profile.id}&reset=1&force=1">List/edit contacts.</a></li>
+								<li><a target="_blank" href="{$profileLinkBase}/create&gid={$profile.id}&reset=1">Add new contact.</a></li>
+							</ul>
+						</li>
+					{/foreach}
+				</ol>
+			</li>
+		{/if}
+		</li>
 	</ul>
-	<h5>(Coming soon: a list of participants from 2015 to get you started for 2016.)</h5>
-	<div {*style="display:none">*}
-	<p>These members (below) are currently 'related' to {$billing_contact->organization.display_name}.</p>
+
+	<h5 style="display:none">(Coming soon: a list of participants from 2015 to get you started for 2016.)</h5>
+	<div style="display:none">
+	<p>These members (below) are currently 'related' to {$billing_contact->organization.display_name}. Click to edit.</p>
 	
   {capture assign=crmURLI}{crmURL p=$pMemberAdd q=$qMemberAdd}{/capture}
   {ts 1=$crmURLI}Add a <a href='%1'>New Member</a>{/ts} for {$billing_contact->organization.display_name}.

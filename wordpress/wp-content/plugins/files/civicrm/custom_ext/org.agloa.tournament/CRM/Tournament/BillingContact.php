@@ -26,6 +26,12 @@ class BillingContact extends TournamentObject{
 	 * @var members
 	 */
 	public $members;
+	/**
+	 *
+	 *
+	 * @var registrationProfiles
+	 */
+	public $registrationProfiles;
 
 	//private $billing_contact_relationship_type_id;
 
@@ -42,6 +48,8 @@ class BillingContact extends TournamentObject{
 		$this->contact = $this->get_contact($contact_id);
 		$this->organization = $this->get_billing_organization();
 		$this->members = $this->get_members($this->organization);
+		$this->registrationProfiles = $this->get_registrationProfiles($contact_id);
+		$_SESSION['registrationProfiles'] = $this->registrationProfiles;
 	}
 
 	function get_billing_organization(){
