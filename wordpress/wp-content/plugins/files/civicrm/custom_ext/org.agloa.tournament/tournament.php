@@ -183,30 +183,28 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'url' => "civicrm/profile/edit?reset=1&id={$organization_id}&gid={$id}",
 	));
 
-	$name = "Profiles";
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Your players, coaches, etc.', array('domain' => 'org.agloa.tournament')),
-			'name' => $name,
+			'name' => "Profiles",
 			'permission' => 'add contacts',
 			'separator' => 1,
 	));
 
-	$path .= "/$name";
-
 	// add a menu item for each of the sesstion billing contact's profiles
+	$registrationProfiles = $session->get('registrationProfiles');
 	foreach ($registrationProfiles as $profile) {
 		$id = $profile["id"];
 		$title = $profile["title"];
-		_tournament_civix_insert_navigation_menu($menu, $path, array(
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles", array(
 				'label' => ts($title, array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}",
 				));
-		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles_{$id}", array(
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles/Profiles_{$id}", array(
 				'label' => ts("List", array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}_list",
 				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
 				));
-		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles_{$id}", array(
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles/Profiles_{$id}", array(
 				'label' => ts("Add new", array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}_add",
 				'url' => "civicrm/profile/create?gid={$id}&reset=1",
