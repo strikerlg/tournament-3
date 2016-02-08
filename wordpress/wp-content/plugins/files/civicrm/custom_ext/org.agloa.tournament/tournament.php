@@ -144,6 +144,7 @@ function tournament_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 function tournament_civicrm_navigationMenu(&$menu) {
+  $session = CRM_Core_Session::singleton();
 	$path = NULL;
 	// 'civicrm'; //NULL
 
@@ -151,9 +152,6 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'label' => ts('Tournament', array('domain' => 'org.agloa.tournament')),
 			'name' => 'tournament',
 			'url' => '',
-			'permission' => 'add contacts',
-			'operator' => 'OR',
-			'separator' => 0,
 	));
 
 	$path = 'tournament';
@@ -165,32 +163,25 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'url' => $url,
 			'permission' => 'add contacts',
 	));
-
+	
+	$billing_contact_id = $session->get('billing_contact_id');
+	$record = named_profile_get("Billing Individual Profile");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Your Individual Contact Information', array('domain' => 'org.agloa.tournament')),
+			'name' => 'individual_profile',
+			'url' => "civicrm/profile/edit?reset=1&id={$billing_contact_id}&gid={$id}",
+	));
+	
+	$organization_id = $session->get('billing_org_id');
+	$organization_name = $session->get('billing_org_name');
 	$record = named_profile_get("Billing Organization Profile");
 	$id = $record["id"];
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
-			'label' => ts('Billing Organizations', array('domain' => 'org.agloa.tournament')),
-			'name' => 'BillingOrganizations',
-			'url' => "civicrm/profile?gid={$id}",
-			'permission' => 'view all contacts',
-			));
-
-	$record = named_report_get("Preliminary Estimates Summary");
-	$id = $record["id"];
-	_tournament_civix_insert_navigation_menu($menu, "{$path}/BillingOrganizations", array(
-			'label' => ts('Preliminary Estimates', array('domain' => 'org.agloa.tournament')),
-			'name' => 'PreliminaryEstimates',
-			'url' => "civicrm/report/instance/{$id}?reset=1",
-			));
-
-	$record = named_group_get("Billing Contacts");
-	$id = $record["id"];
-	_tournament_civix_insert_navigation_menu($menu, $path, array(
-			'label' => ts('Billing Individuals', array('domain' => 'org.agloa.tournament')),
-			'name' => 'BillingContacts',
-			'url' => "civicrm/group/search?context=smog&gid={$id}&reset=1&force=1",
-			'permission' => 'view all contacts',
-			));
+			'label' => ts("{$organization_name} Contact Information", array('domain' => 'org.agloa.tournament')),
+			'name' => 'organization_profile',
+			'url' => "civicrm/profile/edit?reset=1&id={$organization_id}&gid={$id}",
+	));
 
 	$name = "Profiles";
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
@@ -203,8 +194,6 @@ function tournament_civicrm_navigationMenu(&$menu) {
 	$path .= "/$name";
 
 	// add a menu item for each of the sesstion billing contact's profiles
-	$registrationProfiles = $_SESSION['registrationProfiles'];
-
 	foreach ($registrationProfiles as $profile) {
 		$id = $profile["id"];
 		$title = $profile["title"];
@@ -223,6 +212,32 @@ function tournament_civicrm_navigationMenu(&$menu) {
 				'url' => "civicrm/profile/create?gid={$id}&reset=1",
 				));
 	}
+	
+	$record = named_profile_get("Billing Organization Profile");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Billing Organizations', array('domain' => 'org.agloa.tournament')),
+			'name' => 'BillingOrganizations',
+			'url' => "civicrm/profile?gid={$id}",
+			'permission' => 'view all contacts',
+			));
+	
+	$record = named_report_get("Preliminary Estimates Summary");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, "{$path}/BillingOrganizations", array(
+			'label' => ts('Preliminary Estimates', array('domain' => 'org.agloa.tournament')),
+			'name' => 'PreliminaryEstimates',
+			'url' => "civicrm/report/instance/{$id}?reset=1",
+			));
+	
+	$record = named_group_get("Billing Contacts");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Billing Individuals', array('domain' => 'org.agloa.tournament')),
+			'name' => 'BillingContacts',
+			'url' => "civicrm/group/search?context=smog&gid={$id}&reset=1&force=1",
+			'permission' => 'view all contacts',
+			));
 
 	_tournament_civix_navigationMenu($menu);
 }

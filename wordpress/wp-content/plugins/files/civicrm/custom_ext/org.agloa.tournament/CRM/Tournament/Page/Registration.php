@@ -7,23 +7,23 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
 	public $billing_contact;
 	
   public function run() {
-  	//var_dump($profile_id);
+    $session = CRM_Core_Session::singleton();
 //  	$smarty->debugging_ctrl = ($_SERVER['SERVER_NAME'] == 'localhost') ? 'URL' : 'NONE';
     // billing contact is current user, unless admin is using cid argument
     if (isset($_REQUEST["cid"])) {
     	$billing_contact_id = $_REQUEST["cid"];
     } else {
     	// Get logged in user
-    	$session = CRM_Core_Session::singleton();
     	$billing_contact_id = $session->get('userID');
     }
 
     $this->billing_contact = new BillingContact($billing_contact_id); //var_dump($billing_contact); //die('128');
     if ($this->billing_contact->is_error) var_dump($this->billing_contact);
     
-    $session = CRM_Core_Session::singleton();
     $session->set('billing_contact_id', $billing_contact_id);
-    $_SESSION['registrationProfiles'] = $this->billing_contact->registrationProfiles;
+    $session->set('billing_org_id', $this->billing_contact->organization['id']);
+    $session->set('billing_org_name', $this->billing_contact->organization['display_name']);
+    $session->set('registrationProfiles', $this->billing_contact->registrationProfiles);
          
     $this->assign('billing_contact', $this->billing_contact);
     
