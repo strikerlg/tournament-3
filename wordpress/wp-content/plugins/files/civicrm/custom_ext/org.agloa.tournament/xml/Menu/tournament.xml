@@ -84,4 +84,10 @@
     <title>Registration_NewMemberProcess</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/tournament/participant/add</path>
+    <page_callback>CRM_Tournament_Form_Participant</page_callback>
+    <title>Participant</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

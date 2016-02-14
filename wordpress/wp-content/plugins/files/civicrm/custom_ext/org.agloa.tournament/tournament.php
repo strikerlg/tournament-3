@@ -1,9 +1,14 @@
 <?php
-
+/* TODO
+ * Study Group Controller, StateMachine
+ * Register Participants
+ * Register Batches
+ * Invoices 2/14
+ * Team Builder 3/1
+ */
 require_once 'tournament.civix.php';
 require_once 'util.php';
-
-
+//require_once 'CRM/Tournament/TournamentObject.php';
 /**
  * Implementation of hook_civicrm_post
  */
@@ -161,7 +166,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'label' => ts('Dashboard', array('domain' => 'org.agloa.tournament')),
 			'name' => 'tournament_dashboard',
 			'url' => $url,
-			'permission' => 'add contacts',
+			'permission' => 'access Contact Dashboard',
 	));
 	
 	$billing_contact_id = $session->get('billing_contact_id');
@@ -171,6 +176,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'label' => ts('Your Individual Contact Information', array('domain' => 'org.agloa.tournament')),
 			'name' => 'individual_profile',
 			'url' => "civicrm/profile/edit?reset=1&id={$billing_contact_id}&gid={$id}",
+			'permission' => 'edit my contact',
 	));
 	
 	$organization_id = $session->get('billing_org_id');
@@ -181,13 +187,13 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'label' => ts("{$organization_name} Contact Information", array('domain' => 'org.agloa.tournament')),
 			'name' => 'organization_profile',
 			'url' => "civicrm/profile/edit?reset=1&id={$organization_id}&gid={$id}",
+			'permission' => 'access contact reference fields',
 	));
 
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Your players, coaches, etc.', array('domain' => 'org.agloa.tournament')),
 			'name' => "Profiles",
-			'permission' => 'add contacts',
-			'separator' => 1,
+			'permission' => 'profile edit',
 	));
 
 	// add a menu item for each of the sesstion billing contact's profiles
@@ -198,18 +204,29 @@ function tournament_civicrm_navigationMenu(&$menu) {
 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles", array(
 				'label' => ts($title, array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}",
+			'permission' => 'profile edit',
 				));
 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles/Profiles_{$id}", array(
 				'label' => ts("List", array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}_list",
 				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
+			'permission' => 'profile edit',
 				));
 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles/Profiles_{$id}", array(
 				'label' => ts("Add new", array('domain' => 'org.agloa.tournament')),
 				'name' => "Profiles_{$id}_add",
 				'url' => "civicrm/profile/create?gid={$id}&reset=1",
+			'permission' => 'profile create',
 				));
 	}
+	
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Register Participants', array('domain' => 'org.agloa.tournament')),
+			'name' => 'registration',
+			'url' => "civicrm/tournament/participant/add?reset=1&action=add&context=standalone",			
+			'permission' => 'edit event participants',
+			'separator' => 1,
+			));
 	
 	$record = named_profile_get("Billing Organization Profile");
 	$id = $record["id"];
@@ -226,6 +243,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'label' => ts('Preliminary Estimates', array('domain' => 'org.agloa.tournament')),
 			'name' => 'PreliminaryEstimates',
 			'url' => "civicrm/report/instance/{$id}?reset=1",
+			'permission' => 'view all contacts',
 			));
 	
 	$record = named_group_get("Billing Contacts");
@@ -238,4 +256,42 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			));
 
 	_tournament_civix_navigationMenu($menu);
+}
+
+function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
+	// $uploadDir = $config->uploadDir;
+	// Insert custom content above activities
+	$contentPlacement = CRM_Utils_Hook::DASHBOARD_ABOVE;
+	$cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
+	if (!isset($cid)) $cid = $contactID;
+	$contact = contact_get($contactID);
+	$displayName = $contact['display_name'];
+	$title = "Use this link to edit your contact record.";
+	return array( 'Current User' => "<p>cid: $cid</p><p>Welcome, <a title=\"$title\" href=\"/civicrm/contact/add&reset=1&action=update&cid={$contactID}\">$displayName</a>.</p>",
+			'Custom Table' => "
+			<table>
+			<tr><th>Contact Name</th><th>Date</th></tr>
+			<tr><td>Foo</td><td>Bar</td></tr>
+			<tr><td>Goo</td><td>Tar</td></tr>
+			</table>
+			",
+	);
+}
+/**
+ * Implementation of hook_civicrm_preProcess
+ */
+function tournament_civicrm_preProcess($formName, &$form){
+	switch ($formName) {
+		case 'Contribution':
+			$file = '/tmp/contributions.log';
+			$message = strtr("Performed \"@op\" at @time on contribution #@id\n", array(
+					'@op' => $op,
+					'@time' => date('Y-m-d H:i:s'),
+					'@id' => $objectId,
+			));
+			file_put_contents($file, $message, FILE_APPEND);
+			break;
+		default:
+			// nothing to do
+	}
 }

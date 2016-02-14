@@ -1,5 +1,16 @@
 <?php
 /**
+ * get contact matching id
+ *
+ *
+ * @param $id long
+ * @return array
+ */
+function contact_get($id){
+	$result = civicrm_api3('contact', 'get', array("id" => $id));
+	return $result['values'][$id];
+}
+/**
  * Search for group which matches title
  *
  *
