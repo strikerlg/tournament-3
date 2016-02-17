@@ -83,32 +83,33 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'permission' => 'profile edit',
 	));
 
-	//$path .= "/{$name}";
+	$path .= "/{$name}";
 
 	// add a menu item for each of the sesstion billing contact's profiles
-//	$registrationProfiles = $session->get('registrationProfiles');
-// 	foreach ($registrationProfiles as $profile) {
-// 		$id = $profile["id"];
-// 		$title = $profile["title"];
-// 		_tournament_civix_insert_navigation_menu($menu, $path, array(
-// 				'label' => ts($title, array('domain' => domain())),
-// 				'name' => "{$name}_{$id}",
-// 				'permission' => 'profile edit',
-// 				));
-// 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles/Profiles_{$id}", array(
-// 				'label' => ts("List", array('domain' => domain())),
-// 				'name' => "{$name}_{$id}_list",
-// 				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
-// 				'permission' => 'profile edit',
-// 				));
-// 		_tournament_civix_insert_navigation_menu($menu, "{$path}/Profiles/Profiles_{$id}", array(
-// 				'label' => ts("Add new", array('domain' => domain())),
-// 				'name' => "{$name}_{$id}_add",
-// 				'url' => "civicrm/profile/create?gid={$id}&reset=1",
-// 				'permission' => 'profile create',
-// 				));
-// 	}
-
+	$registrationProfiles = get_registrationProfiles($billing_contact_id);
+	foreach ($registrationProfiles as $profile) {
+		$id = $profile["id"];
+		$title = $profile["title"];
+		_tournament_civix_insert_navigation_menu($menu, $path, array(
+				'label' => ts("$title", array('domain' => $domain)),
+				'name' => "{$name}_{$id}",
+				'permission' => 'profile edit',
+				));
+		_tournament_civix_insert_navigation_menu($menu, "$path/{$name}_{$id}", array(
+				'label' => ts("List", array('domain' => $domain)),
+				'name' => "{$name}_{$id}_list",
+				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
+				'permission' => 'profile edit',
+				));
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/{$name}_{$id}", array(
+				'label' => ts("Add new", array('domain' => $domain)),
+				'name' => "{$name}_{$id}_add",
+				'url' => "civicrm/profile/create?gid={$id}&reset=1",
+				'permission' => 'profile create',
+				));
+	}
+	
+	$path = path();
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Register Participants', $domain),
 			'name' => 'registration',
@@ -118,32 +119,41 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'separator' => 1,
 	));
 
-// 	$record = named_profile_get("Billing Organization Profile");
-// 	$id = $record["id"];
-// 	_tournament_civix_insert_navigation_menu($menu, path(), array(
-// 			'label' => ts('Billing Organizations', array('domain' => $domain)),
-// 			'name' => 'BillingOrganizations',
-// 			'url' => "civicrm/profile?gid={$id}",
-// 			'permission' => 'view all contacts',
-// 			));
+	$path = null;
+	$name = "TournamentAdmin";
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Tournament Admins', array('domain' => $domain)),
+			'name' => $name,
+			'permission' => 'view all contacts',
+			));
+	
+	$path = $name;
+	$record = named_profile_get("Billing Organization Profile");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Billing Organizations', array('domain' => $domain)),
+			'name' => 'BillingOrganizations',
+			'url' => "civicrm/profile?gid={$id}",
+			'permission' => 'view all contacts',
+			));
 
-// 	$record = named_report_get("Preliminary Estimates Summary");
-// 	$id = $record["id"];
-// 	_tournament_civix_insert_navigation_menu($menu, path()."/BillingOrganizations", array(
-// 			'label' => ts('Preliminary Estimates', array('domain' => $domain)),
-// 			'name' => 'PreliminaryEstimates',
-// 			'url' => "civicrm/report/instance/{$id}?reset=1",
-// 			'permission' => 'view all contacts',
-// 			));
+	$record = named_report_get("Preliminary Estimates Summary");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, "{$path}/BillingOrganizations", array(
+			'label' => ts('Preliminary Estimates', array('domain' => $domain)),
+			'name' => 'PreliminaryEstimates',
+			'url' => "civicrm/report/instance/{$id}?reset=1",
+			'permission' => 'view all contacts',
+			));
 
-// 	$record = named_group_get("Billing Contacts");
-// 	$id = $record["id"];
-// 	_tournament_civix_insert_navigation_menu($menu, path(), array(
-// 			'label' => ts('Billing Individuals', array('domain' => $domain)),
-// 			'name' => 'BillingContacts',
-// 			'url' => "civicrm/group/search?context=smog&gid={$id}&reset=1&force=1",
-// 			'permission' => 'view all contacts',
-// 			));
+	$record = named_group_get("Billing Contacts");
+	$id = $record["id"];
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Billing Individuals', array('domain' => $domain)),
+			'name' => 'BillingContacts',
+			'url' => "civicrm/group/search?context=smog&gid={$id}&reset=1&force=1",
+			'permission' => 'view all contacts',
+			));
 
 	_tournament_civix_navigationMenu($menu);
 }
@@ -162,9 +172,9 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$contact = contact_get($cid);
 	$profile = named_profile_get("Billing Individual Profile");
 	$currentUserHREF = profileEditHREF($profile, $contact);
-	$currentUserHTML = "Welcome, {$currentUserHREF}.";
+	$currentUserHTML = "Welcome, {$currentUserHREF}. If you are new to this system, the first step is to double-check your contact information. You probably only need to do this once, ever.<p>The links on this 'dash";
 	
-	$billingOrgsHTML = "You are a contact for these organizations:<ol>";
+	$billingOrgsHTML = "The next step is to double-check your organization's contact information. You probably only need to do this once, ever. <p>This is also where you submit your Preliminary Estimates. You do need to do this once per tournament, in January.</p>You are a contact for these organizations:<ol>";
 	$billingOrgs = billing_organizations_get($cid);	
 	$profile = named_profile_get("Billing Organization Profile");
 	foreach($billingOrgs as $contact) {		
@@ -172,7 +182,7 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	}
 	$billingOrgsHTML .= "</ol>";
 	
-	$registrationProfilesHTML = "You have access to contacts in these groups:<ol>";
+	$registrationProfilesHTML = "The next step is to enter contacts for your group(s). You probably only need to do this once per contact, ever.<pThis just enters them into the database. This doesn't mean they are commmited to attending a tournament.</p>You have access to contacts in these groups:<ol>";
 	$registrationProfiles = get_registrationProfiles($cid);	
 	foreach($registrationProfiles as $profile) {
 		$registrationProfilesHTML .= "<li>" . $profile['title'] . "<ul>";
@@ -183,7 +193,7 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$registrationProfilesHTML .= "</ol>";
 	
 	return array( 'Current User' => $currentUserHTML,
-			'Billing Organizations' => $billingOrgsHTML,
+			'Billing Organizations (e.g., School Districts)' => $billingOrgsHTML,
 			'Contacts (Players, coaches, etc.)' => $registrationProfilesHTML,
 	);
 }

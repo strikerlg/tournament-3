@@ -107,8 +107,8 @@ function profileEditHREF($profile, $contact){
 function profileListHREF($profile){
 	$text = 'List';
 	$title = "Use this link to edit contacts in {$profile['title']}";
-	$token = "civicrm/profile&reset=1&force=1&gid=";
-	return tokenIDHREF($token, $profile["id"], $title, $text);
+	$token = "civicrm/profile&reset=1&force=1&gid={$profile['id']}";
+	return tokenIDHREF($token, $title, $text);
 }
 
 /**
@@ -118,8 +118,10 @@ function profileListHREF($profile){
  * @return string
  */
 function profileCreateHREF($profile){
+	$text = "Add New";
 	$title = "Use this link to add contacts to {$profile['title']}";
-	return tokenIDHREF("civicrm/profile/create&reset=1&gid=", $profile["id"], $title, 'Add New');
+	$token = "civicrm/profile/create&reset=1&gid={$profile['id']}";
+	return tokenIDHREF($token, $title, $text);
 }
 
 /**
