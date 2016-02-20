@@ -109,15 +109,15 @@ function tournament_civicrm_navigationMenu(&$menu) {
 				));
 	}
 	
-	$path = path();
-	_tournament_civix_insert_navigation_menu($menu, $path, array(
-			'label' => ts('Register Participants', $domain),
-			'name' => 'registration',
-			'url' => "civicrm/tournament/participant/add?reset=1&action=add&context=standalone&eid=1",
-			'permission' => 'administer civicrm',
-			// 			'permission' => 'edit event participants',
-			'separator' => 1,
-	));
+// 	$path = path();
+// 	_tournament_civix_insert_navigation_menu($menu, $path, array(
+// 			'label' => ts('Register Participants', $domain),
+// 			'name' => 'registration',
+// 			'url' => "civicrm/tournament/participant/add?reset=1&action=add&context=standalone&eid=1",
+// 			'permission' => 'administer civicrm',
+// 			// 			'permission' => 'edit event participants',
+// 			'separator' => 1,
+// 	));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -167,12 +167,16 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	// Insert custom content above activities
 	$contentPlacement = CRM_Utils_Hook::DASHBOARD_ABOVE;
 	
-	$cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
+	$cid = CRM_Utils_Request::retrieve('bid', 'Positive', $this);
 	if (!isset($cid)) $cid = $contactID;
+	$session = CRM_Core_Session::singleton();
+	$session->set('billing_contact_id', $cid);
+	
 	$contact = contact_get($cid);
 	$profile = named_profile_get("Billing Individual Profile");
 	$currentUserHREF = profileEditHREF($profile, $contact);
-	$currentUserHTML = "Welcome, {$currentUserHREF}. If you are new to this system, the first step is to double-check your contact information. You probably only need to do this once, ever.<p>The links on this 'dash";
+	$currentUserHTML = "Welcome, {$currentUserHREF}. If you are new to this system, the first step is to double-check your contact information. You probably only need to do this once, ever.<p>";
+	//The links on this 'dash";
 	
 	$billingOrgsHTML = "The next step is to double-check your organization's contact information. You probably only need to do this once, ever. <p>This is also where you submit your Preliminary Estimates. You do need to do this once per tournament, in January.</p>You are a contact for these organizations:<ol>";
 	$billingOrgs = billing_organizations_get($cid);	
@@ -182,7 +186,9 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	}
 	$billingOrgsHTML .= "</ol>";
 	
-	$registrationProfilesHTML = "The next step is to enter contacts for your group(s). You probably only need to do this once per contact, ever.<pThis just enters them into the database. This doesn't mean they are commmited to attending a tournament.</p>You have access to contacts in these groups:<ol>";
+	$registrationProfilesHTML = "The next step is to enter contacts for your group(s). You probably only need to do this once per contact, ever."
+	. "<p>This only enters them into the database. it doesn't mean they are commmited to attending a tournament. That section is coming soon.</p>"
+	. "You have access to contacts in these groups:<ol>";
 	$registrationProfiles = get_registrationProfiles($cid);	
 	foreach($registrationProfiles as $profile) {
 		$registrationProfilesHTML .= "<li>" . $profile['title'] . "<ul>";
@@ -191,10 +197,15 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 		$registrationProfilesHTML .= "</li></ul>";
 	}
 	$registrationProfilesHTML .= "</ol>";
+
+	
+	$regesterParticipantHTML = "Once you have entered all the contacts for your group(s), you can register them to attend the tournament."
+	. "<p><a href = \"" . baseURL() . "/civicrm/participant/add&reset=1&action=add&context=standalone\">Use this link to register a participant for the tournament</a>.</p>";
 	
 	return array( 'Current User' => $currentUserHTML,
 			'Billing Organizations (e.g., School Districts)' => $billingOrgsHTML,
 			'Contacts (Players, coaches, etc.)' => $registrationProfilesHTML,
+			//'Register Contacts for Tournament' => $regesterParticipantHTML,
 	);
 }
 
@@ -205,17 +216,11 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
  * @return long
  */
 function billing_contact_get(){
+	$billing_contact_id = CRM_Utils_Request::retrieve('bid', 'Positive');
 	$session = CRM_Core_Session::singleton();
-	if (null == $session->get('billing_contact_id')) {
-		if (isset($_REQUEST["cid"])) {
-			$billing_contact_id = $_REQUEST["cid"];
-		} else {
-			// Get logged in user
-			$billing_contact_id = $session->get('userID');
-		}
-		$session->set('billing_contact_id', $billing_contact_id);
-	}
-	$billing_contact_id = $session->get('billing_contact_id');
+	if (!isset($billing_contact_id)) $billing_contact_id = $session->get('billing_contact_id');
+	if (!isset($billing_contact_id)) $billing_contact_id = $session->get('userID');
+	$session->set('billing_contact_id', $billing_contact_id);
 	return contact_get($billing_contact_id);
 }
 
@@ -224,6 +229,7 @@ function billing_contact_get(){
  *
  *
  * @param $name string
+ * comment here
  * @return array
  */
 function billing_organizations_get($contactID){

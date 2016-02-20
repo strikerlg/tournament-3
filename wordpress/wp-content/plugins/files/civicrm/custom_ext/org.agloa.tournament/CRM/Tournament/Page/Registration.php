@@ -7,6 +7,7 @@ class CRM_Tournament_Page_Registration extends CRM_Core_Page {
 	public $billing_contact;
 	
   public function run() {
+  	CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm'));
     $session = CRM_Core_Session::singleton();
 //  	$smarty->debugging_ctrl = ($_SERVER['SERVER_NAME'] == 'localhost') ? 'URL' : 'NONE';
     // billing contact is current user, unless admin is using cid argument
