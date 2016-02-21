@@ -1,8 +1,6 @@
 <?php
 /* TODO
  * Study Group Controller, StateMachine
- * Register Participants
- * Register Batches
  * Invoices 2/14
  * Team Builder 3/1
  */
@@ -196,7 +194,7 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$contact = contact_get($cid);
 	$profile = named_profile_get("Billing Individual Profile");
 	$currentUserHREF = profileEditHREF($profile, $contact);
-	$currentUserHTML = "Welcome, {$currentUserHREF}. The links on this page (and the Tournament menu above) will guide you through the steps of tournament registration."
+	$currentUserHTML = "Welcome, {$currentUserHREF}. The links on this page (and the Tournament navigation menu above) will guide you through the steps of tournament registration."
 	. "<p>If you are new to this system, the first step is to double-check your contact information. You probably only need to do this once, ever.<p>";
 	//The links on this 'dash";
 	
@@ -221,28 +219,28 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$registrationProfilesHTML .= "</ol>";
 
 	$regesterParticipantHTML = 
-	"Once you have entered all the contacts for your group(s), you can register them to attend the tournament.<ul>"
+	"Once you have entered all the contacts for your group(s), you can register them to attend the tournament. Be sure to indicate which competitions they will enter. That's important for the (coming soon) team registration step. <ul>"
 	. "<li><a href = \"" . baseURL() . registrationReportRelativeURL() 
 	."\">Use this link to list/edit contacts already registered for the tournament</a>.</li>"	
 	. "<li><a href = \"" . baseURL() . registrationRelativeURL() 
 	."\">Use this link to register a contact for the tournament</a>.</li>"
 	."</ul>";
 	
-	return array( 'Current User' => $currentUserHTML,
-			'Billing Organizations (e.g., School Districts)' => $billingOrgsHTML,
-			'Contacts (Players, coaches, etc.)' => $registrationProfilesHTML,
-			'Register Contacts for Tournament' => $regesterParticipantHTML,
+	return array( '1. Your Contact Data' => $currentUserHTML,
+			'2. Billing Organizations (e.g., School Districts)' => $billingOrgsHTML,
+			'3. Contacts (Players, coaches, etc.)' => $registrationProfilesHTML,
+			'4. Register Contacts for Tournament' => $regesterParticipantHTML,
 			// TODO cost sheet/invoice
 	);
 }
 
 function registrationRelativeURL($delim = "&"){
-	$eid = 1;
+	$eid = 1; //TODO
 	return "civicrm/participant/add{$delim}reset=1&action=add&context=standalone&eid={$eid}";
 }
 
 function registrationReportRelativeURL($delim = "&"){
-	$id = 25;
+	$id = 25; //TODO
 	return "civicrm/report/instance/{$id}{$delim}reset=1";
 }
 
