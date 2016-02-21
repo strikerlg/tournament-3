@@ -81,11 +81,12 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'label' => ts('Your players, coaches, etc.', $domain),
 			'name' => $name,
 			'permission' => 'profile edit',
+			'separator' => 1,
 	));
 
 	$path .= "/{$name}";
 
-	// add a menu item for each of the sesstion billing contact's profiles
+	// add a menu item for each of the session billing contact's profiles
 	$registrationProfiles = get_registrationProfiles($billing_contact_id);
 	foreach ($registrationProfiles as $profile) {
 		$id = $profile["id"];
@@ -109,15 +110,34 @@ function tournament_civicrm_navigationMenu(&$menu) {
 				));
 	}
 	
-// 	$path = path();
-// 	_tournament_civix_insert_navigation_menu($menu, $path, array(
-// 			'label' => ts('Register Participants', $domain),
-// 			'name' => 'registration',
-// 			'url' => "civicrm/tournament/participant/add?reset=1&action=add&context=standalone&eid=1",
-// 			'permission' => 'administer civicrm',
-// 			// 			'permission' => 'edit event participants',
-// 			'separator' => 1,
-// 	));
+	$path = path();
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Register Contacts for Tournament', $domain),
+			'name' => 'registration',
+			'permission' => 'edit event participants',
+			'separator' => 1,
+	));
+	_tournament_civix_insert_navigation_menu($menu, "{$path}/registration", array(
+			'label' => ts('List/edit contacts already registered', $domain),
+			'name' => 'participantList',
+			'url' => registrationReportRelativeURL("?"),
+			'permission' => 'edit event participants',
+	));
+	_tournament_civix_insert_navigation_menu($menu, "{$path}/registration", array(
+			'label' => ts('Register a contact', $domain),
+			'name' => 'registerParticipant',
+			'url' => registrationRelativeURL("?"),
+			'permission' => 'edit event participants',
+	));
+	
+	$path = path();
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Advanced Operations', $domain),
+			'name' => 'bulkOperations',
+			'permission' => 'edit event participants',
+			'url' => bulkOperationsRelativeURL("?"),
+			'separator' => 1,
+	));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -164,6 +184,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_dashboard
  */
 function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {	
+	//TODO restrict this dashboard by access rights
 	// Insert custom content above activities
 	$contentPlacement = CRM_Utils_Hook::DASHBOARD_ABOVE;
 	
@@ -175,7 +196,8 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$contact = contact_get($cid);
 	$profile = named_profile_get("Billing Individual Profile");
 	$currentUserHREF = profileEditHREF($profile, $contact);
-	$currentUserHTML = "Welcome, {$currentUserHREF}. If you are new to this system, the first step is to double-check your contact information. You probably only need to do this once, ever.<p>";
+	$currentUserHTML = "Welcome, {$currentUserHREF}. The links on this page (and the Tournament menu above) will guide you through the steps of tournament registration."
+	. "<p>If you are new to this system, the first step is to double-check your contact information. You probably only need to do this once, ever.<p>";
 	//The links on this 'dash";
 	
 	$billingOrgsHTML = "The next step is to double-check your organization's contact information. You probably only need to do this once, ever. <p>This is also where you submit your Preliminary Estimates. You do need to do this once per tournament, in January.</p>You are a contact for these organizations:<ol>";
@@ -187,7 +209,7 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$billingOrgsHTML .= "</ol>";
 	
 	$registrationProfilesHTML = "The next step is to enter contacts for your group(s). You probably only need to do this once per contact, ever."
-	. "<p>This only enters them into the database. it doesn't mean they are commmited to attending a tournament. That section is coming soon.</p>"
+	. "<p>This only enters them into the database. it doesn't mean they are commmited to attending a tournament.</p>"
 	. "You have access to contacts in these groups:<ol>";
 	$registrationProfiles = get_registrationProfiles($cid);	
 	foreach($registrationProfiles as $profile) {
@@ -198,15 +220,34 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	}
 	$registrationProfilesHTML .= "</ol>";
 
-	
-	$regesterParticipantHTML = "Once you have entered all the contacts for your group(s), you can register them to attend the tournament."
-	. "<p><a href = \"" . baseURL() . "/civicrm/participant/add&reset=1&action=add&context=standalone\">Use this link to register a participant for the tournament</a>.</p>";
+	$regesterParticipantHTML = 
+	"Once you have entered all the contacts for your group(s), you can register them to attend the tournament.<ul>"
+	. "<li><a href = \"" . baseURL() . registrationReportRelativeURL() 
+	."\">Use this link to list/edit contacts already registered for the tournament</a>.</li>"	
+	. "<li><a href = \"" . baseURL() . registrationRelativeURL() 
+	."\">Use this link to register a contact for the tournament</a>.</li>"
+	."</ul>";
 	
 	return array( 'Current User' => $currentUserHTML,
 			'Billing Organizations (e.g., School Districts)' => $billingOrgsHTML,
 			'Contacts (Players, coaches, etc.)' => $registrationProfilesHTML,
-			//'Register Contacts for Tournament' => $regesterParticipantHTML,
+			'Register Contacts for Tournament' => $regesterParticipantHTML,
+			// TODO cost sheet/invoice
 	);
+}
+
+function registrationRelativeURL($delim = "&"){
+	$eid = 1;
+	return "civicrm/participant/add{$delim}reset=1&action=add&context=standalone&eid={$eid}";
+}
+
+function registrationReportRelativeURL($delim = "&"){
+	$id = 25;
+	return "civicrm/report/instance/{$id}{$delim}reset=1";
+}
+
+function bulkOperationsRelativeURL($delim = "&"){
+	return "civicrm/contact/search{$delim}reset=1&force=1";
 }
 
 /**
