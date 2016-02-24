@@ -6,7 +6,7 @@
  * @param $status string
  * @return array
  */
-function get_aclGroups($contact_id, $is_active = 1, $params){
+function get_aclGroups($contact_id, $is_active = 1, $params = null){
 	$contact_groups = get_contact_groups($contact_id);
 
 	foreach ($contact_groups as $contact_group) {
@@ -44,7 +44,7 @@ function get_contact_groups($contact_id, $status = "Added"){
  * @return array
  */
 function get_aclRoles($aclGroups){
-	foreach ($aclGroups as $group){
+	if (count($aclGroups) > 0) foreach ($aclGroups as $group){
 		$entity_id = $group["id"];
 		$apiParams = array("entity_id" => $entity_id
 				, "entity_table" => "civicrm_group", "is_active" => 1);
@@ -119,7 +119,7 @@ function profileListHREF($profile){
  */
 function profileCreateHREF($profile){
 	$text = "Add New";
-	$title = "Use this link to add contacts to {$profile['title']}";
+	$title = "Use this link to add new contacts to {$profile['title']}";
 	$token = "civicrm/profile/create&reset=1&gid={$profile['id']}";
 	return tokenIDHREF($token, $title, $text);
 }

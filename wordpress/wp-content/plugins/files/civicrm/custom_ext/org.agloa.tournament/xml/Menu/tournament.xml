@@ -90,4 +90,22 @@
     <title>Participant</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/tournament/team</path>
+    <page_callback>CRM_Tournament_Team_Page_Team</page_callback>
+    <title>Teams</title>
+    <access_arguments>edit groups</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/tournament/team/search</path>
+    <page_callback>CRM_Tournament_Team_Form_Search</page_callback>
+    <title>Find Teams</title>
+    <access_arguments>edit groups</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/tournament/team/add</path>
+    <page_callback>CRM_Tournament_Team_Controller</page_callback>
+    <title>New Team</title>
+    <access_arguments>edit groups</access_arguments>
+  </item>
 </menu>

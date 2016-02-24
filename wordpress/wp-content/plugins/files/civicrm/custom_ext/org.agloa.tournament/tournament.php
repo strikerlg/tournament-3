@@ -60,7 +60,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 	
 	$profile = named_profile_get("Billing Organization Profile");
 	$billing_organizations = billing_organizations_get($billing_contact_id);
-	foreach ($billing_organizations as $org){		
+	if (count($billing_organizations) > 0) foreach ($billing_organizations as $org){		
 		$HREF = contact_profile_HREF_data($org, $profile, $delim);
 		$label = $HREF['title'];
 		$url = $HREF['relativeURL'];
@@ -86,7 +86,8 @@ function tournament_civicrm_navigationMenu(&$menu) {
 
 	// add a menu item for each of the session billing contact's profiles
 	$registrationProfiles = get_registrationProfiles($billing_contact_id);
-	foreach ($registrationProfiles as $profile) {
+	if (count($registrationProfiles) > 0)
+		foreach ($registrationProfiles as $profile) {
 		$id = $profile["id"];
 		$title = $profile["title"];
 		_tournament_civix_insert_navigation_menu($menu, $path, array(
@@ -95,13 +96,13 @@ function tournament_civicrm_navigationMenu(&$menu) {
 				'permission' => 'profile edit',
 				));
 		_tournament_civix_insert_navigation_menu($menu, "$path/{$name}_{$id}", array(
-				'label' => ts("List", array('domain' => $domain)),
+				'label' => ts("Find Contacts", array('domain' => $domain)),
 				'name' => "{$name}_{$id}_list",
 				'url' => "civicrm/profile?gid={$id}&reset=1&force=1",
 				'permission' => 'profile edit',
 				));
 		_tournament_civix_insert_navigation_menu($menu, "{$path}/{$name}_{$id}", array(
-				'label' => ts("Add new", array('domain' => $domain)),
+				'label' => ts("New Contact", array('domain' => $domain)),
 				'name' => "{$name}_{$id}_add",
 				'url' => "civicrm/profile/create?gid={$id}&reset=1",
 				'permission' => 'profile create',
@@ -136,6 +137,22 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'url' => bulkOperationsRelativeURL("?"),
 			'separator' => 1,
 	));
+
+	$path = null;
+	$name = "Scheduling";
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Scheduling', array('domain' => $domain)),
+			'name' => $name,
+			'permission' => 'edit event participants',
+			));
+	
+	$path = $name;
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('New Team', array('domain' => $domain)),
+			'name' => 'NewTeam',
+			'url' => "civicrm/tournament/team/add?reset=1",
+			'permission' => 'edit event participants',
+			));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -183,6 +200,9 @@ function tournament_civicrm_navigationMenu(&$menu) {
  */
 function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {	
 	//TODO restrict this dashboard by access rights
+//       if (!CRM_Core_Permission::check('administer reserved groups')) {
+//         CRM_Core_Error::statusBounce(ts("You do not have sufficient permission to change settings for this reserved group."));
+//       }
 	// Insert custom content above activities
 	$contentPlacement = CRM_Utils_Hook::DASHBOARD_ABOVE;
 	
@@ -207,7 +227,7 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$billingOrgsHTML .= "</ol>";
 	
 	$registrationProfilesHTML = "The next step is to enter contacts for your group(s). You probably only need to do this once per contact, ever."
-	. "<p>This only enters them into the database. it doesn't mean they are commmited to attending a tournament.</p>"
+	. "<p>This only enters them into the database. it doesn't mean they are commited to attending a tournament.</p>"
 	. "You have access to contacts in these groups:<ol>";
 	$registrationProfiles = get_registrationProfiles($cid);	
 	foreach($registrationProfiles as $profile) {
@@ -292,7 +312,7 @@ function get_registrationProfiles($contact_id){
 	$aclGroups = get_aclGroups($contact_id);
 	$registrationGroups = get_registrationGroups($aclGroups);
 
-	foreach ($registrationGroups as $group){
+	if(count($registrationGroups) > 0) foreach ($registrationGroups as $group){
 		$group_id = $group["id"];
 		$apiParams = array("add_to_group_id" => $group_id
 				, "limit_listings_group_id" => $group_id
@@ -312,7 +332,7 @@ function get_registrationProfiles($contact_id){
 
 function get_registrationGroups($aclGroups){ // test 93
 	$roles = get_aclRoles($aclGroups);
-	foreach ($roles as $role){
+	if (count($roles)>0) foreach ($roles as $role){
 		$entity_id = $role["acl_role_id"]; // should be 39
 		$apiParams = array("entity_id" => $entity_id
 				, "deny" => 0, "object_table" => "civicrm_saved_search"
@@ -331,7 +351,7 @@ function get_registrationGroups($aclGroups){ // test 93
 	unset($result);
 
 	$key = "id";
-	foreach($acls as $acl) {
+	if (count($acls) > 0) foreach($acls as $acl) {
 		$result = civicrm_api3_get('Group', array($key => $acl["object_id"]));
 
 		if (is_array($result)) foreach ($result as $record) $records[$record[$key]] = $record;
