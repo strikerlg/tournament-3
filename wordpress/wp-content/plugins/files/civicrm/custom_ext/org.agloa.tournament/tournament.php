@@ -117,15 +117,15 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'separator' => 1,
 	));
 	_tournament_civix_insert_navigation_menu($menu, "{$path}/registration", array(
-			'label' => ts('List/edit contacts already registered', $domain),
-			'name' => 'participantList',
-			'url' => registrationReportRelativeURL("?"),
-			'permission' => 'edit event participants',
-	));
-	_tournament_civix_insert_navigation_menu($menu, "{$path}/registration", array(
 			'label' => ts('Register a contact', $domain),
 			'name' => 'registerParticipant',
 			'url' => registrationRelativeURL("?"),
+			'permission' => 'edit event participants',
+	));
+	_tournament_civix_insert_navigation_menu($menu, "{$path}/registration", array(
+			'label' => ts('List/edit contacts already registered', $domain),
+			'name' => 'participantList',
+			'url' => registrationReportRelativeURL("?"),
 			'permission' => 'edit event participants',
 	));
 	
@@ -138,21 +138,22 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'separator' => 1,
 	));
 
-	$path = null;
-	$name = "Scheduling";
-	_tournament_civix_insert_navigation_menu($menu, $path, array(
-			'label' => ts('Scheduling', array('domain' => $domain)),
-			'name' => $name,
-			'permission' => 'edit event participants',
-			));
+// 	$path = null;
+// 	$name = "Scheduling";
+// 	_tournament_civix_insert_navigation_menu($menu, $path, array(
+// 			'label' => ts('Scheduling', array('domain' => $domain)),
+// 			'name' => $name,
+// 			//'permission' => 'edit event participants',
+// 			'permission' => 'edit event participants',
+// 			));
 	
-	$path = $name;
-	_tournament_civix_insert_navigation_menu($menu, $path, array(
-			'label' => ts('New Team', array('domain' => $domain)),
-			'name' => 'NewTeam',
-			'url' => "civicrm/tournament/team/add?reset=1",
-			'permission' => 'edit event participants',
-			));
+// 	$path = $name;
+// 	_tournament_civix_insert_navigation_menu($menu, $path, array(
+// 			'label' => ts('New Team', array('domain' => $domain)),
+// 			'name' => 'NewTeam',
+// 			'url' => "civicrm/tournament/team/add?reset=1",
+// 			'permission' => 'edit event participants',
+// 			));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -240,10 +241,10 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 
 	$regesterParticipantHTML = 
 	"Once you have entered all the contacts for your group(s), you can register them to attend the tournament. Be sure to indicate which competitions they will enter. That's important for the (coming soon) team registration step. <ul>"
-	. "<li><a href = \"" . baseURL() . registrationReportRelativeURL() 
-	."\">Use this link to list/edit contacts already registered for the tournament</a>.</li>"	
 	. "<li><a href = \"" . baseURL() . registrationRelativeURL() 
 	."\">Use this link to register a contact for the tournament</a>.</li>"
+	. "<li><a href = \"" . baseURL() . registrationReportRelativeURL() 
+	."\">Use this link to list/edit contacts already registered for the tournament</a>.</li>"	
 	."</ul>";
 	
 	return array( '1. Your Contact Data' => $currentUserHTML,
