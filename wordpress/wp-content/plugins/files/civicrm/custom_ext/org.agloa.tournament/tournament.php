@@ -143,17 +143,24 @@ function tournament_civicrm_navigationMenu(&$menu) {
 // 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 // 			'label' => ts('Scheduling', array('domain' => $domain)),
 // 			'name' => $name,
-// 			//'permission' => 'edit event participants',
 // 			'permission' => 'edit event participants',
 // 			));
 	
-// 	$path = $name;
-// 	_tournament_civix_insert_navigation_menu($menu, $path, array(
-// 			'label' => ts('New Team', array('domain' => $domain)),
-// 			'name' => 'NewTeam',
-// 			'url' => "civicrm/tournament/team/add?reset=1",
-// 			'permission' => 'edit event participants',
-// 			));
+// 		$path = $name;
+// 		_tournament_civix_insert_navigation_menu($menu, $path, array(
+// 				'label' => ts('New Team', array('domain' => $domain)),
+// 				'name' => 'NewTeam',
+// 				'url' => "civicrm/tournament/team/add?reset=1",
+// 				'permission' => 'edit event participants',
+// 				));
+	
+// 		$path = $name;
+// 		_tournament_civix_insert_navigation_menu($menu, $path, array(
+// 				'label' => ts('List/edit existing teams', array('domain' => $domain)),
+// 				'name' => 'teamList',
+// 				'url' => "civicrm/tournament/team/search",//?reset=1",
+// 				'permission' => 'edit event participants',
+// 				));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -270,7 +277,7 @@ function bulkOperationsRelativeURL($delim = "&"){
 }
 
 /**
- * billing contact is current user, unless admin is using cid argument
+ * billing contact is current user, unless admin is using bid argument
  *
  *
  * @return long
@@ -282,6 +289,19 @@ function billing_contact_get(){
 	if (!isset($billing_contact_id)) $billing_contact_id = $session->get('userID');
 	$session->set('billing_contact_id', $billing_contact_id);
 	return contact_get($billing_contact_id);
+}
+
+/**
+ * find ID of current user, unless admin is using uid argument
+ *
+ *
+ * @return long
+ */
+function user_id_get(){
+	$uid = CRM_Utils_Request::retrieve('uid', 'Positive');
+	$session = CRM_Core_Session::singleton();
+	if (!isset($uid)) $uid = $session->get('userID');
+	return $uid;
 }
 
 /**
@@ -331,10 +351,10 @@ function get_registrationProfiles($contact_id){
 	return $profiles;
 }
 
-function get_registrationGroups($aclGroups){ // test 93
+function get_registrationGroups($aclGroups){
 	$roles = get_aclRoles($aclGroups);
 	if (count($roles)>0) foreach ($roles as $role){
-		$entity_id = $role["acl_role_id"]; // should be 39
+		$entity_id = $role["acl_role_id"]; 
 		$apiParams = array("entity_id" => $entity_id
 				, "deny" => 0, "object_table" => "civicrm_saved_search"
 				, "entity_table" => "civicrm_acl_role", "is_active" => 1);
