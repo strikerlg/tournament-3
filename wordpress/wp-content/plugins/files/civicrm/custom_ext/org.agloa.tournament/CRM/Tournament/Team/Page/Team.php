@@ -2,8 +2,7 @@
 
 /**
  *
- * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @package Tournament
  * $Id$
  *
  */
@@ -101,26 +100,20 @@ class CRM_Tournament_Team_Page_Team extends CRM_Core_Page_Basic {
     $groupPermission = CRM_Core_Permission::check('edit groups') ? CRM_Core_Permission::EDIT : CRM_Core_Permission::VIEW;
     $this->assign('groupPermission', $groupPermission);
 
-    $showOrgInfo = FALSE;
+//    $showOrgInfo = FALSE;
 
-    // CRM-9936
-    $reservedPermission = CRM_Core_Permission::check('administer reserved groups') ? CRM_Core_Permission::EDIT : CRM_Core_Permission::VIEW;
-    $this->assign('reservedPermission', $reservedPermission);
+//     $reservedPermission = CRM_Core_Permission::check('administer reserved groups') ? CRM_Core_Permission::EDIT : CRM_Core_Permission::VIEW;
+//     $this->assign('reservedPermission', $reservedPermission);
 
-    if (CRM_Core_Permission::check('administer Multiple Organizations') &&
-      CRM_Core_Permission::isMultisiteEnabled()
-    ) {
-      $showOrgInfo = TRUE;
-    }
-    $this->assign('showOrgInfo', $showOrgInfo);
+//     if (CRM_Core_Permission::check('administer Multiple Organizations') &&
+//       CRM_Core_Permission::isMultisiteEnabled()
+//     ) {
+//       $showOrgInfo = TRUE;
+//     }
+//     $this->assign('showOrgInfo', $showOrgInfo);
 
-    // Refresh smart group cache
-    if (!empty($_GET['update_smart_groups'])) {
-      CRM_Contact_BAO_GroupContactCache::loadAll();
-    }
-    else {
-      CRM_Contact_BAO_GroupContactCache::fillIfEmpty();
-    }
+    // Refresh cache
+    CRM_Contact_BAO_GroupContactCache::fillIfEmpty();
 
     $this->search();
   }

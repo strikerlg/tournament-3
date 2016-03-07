@@ -12,8 +12,6 @@ class CRM_Tournament_Team_Form_Search extends CRM_Core_Form {
     parent::preProcess();
 
     CRM_Core_Resources::singleton()->addPermissions('edit groups');
-    
-    //TODO: create list of searchable teams
   }
 
   /**
@@ -34,30 +32,6 @@ class CRM_Tournament_Team_Form_Search extends CRM_Core_Form {
       CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Group', 'title')
     );
 
-//     $groupTypes = CRM_Core_OptionGroup::values('group_type', TRUE);
-//     $config = CRM_Core_Config::singleton();
-//     if ($config->userFramework == 'Joomla') {
-//       unset($groupTypes['Access Control']);
-//     }
-
-//     $this->addCheckBox('group_type',
-//       ts('Type'),
-//       $groupTypes,
-//       NULL, NULL, NULL, NULL, '&nbsp;&nbsp;&nbsp;'
-//     );
-
-//     $this->add('select', 'visibility', ts('Visibility'),
-//       array('' => ts('- any visibility -')) + CRM_Core_SelectValues::ufVisibility(TRUE)
-//     );
-    
-
-//     $groupStatuses = array(ts('Enabled') => 1, ts('Disabled') => 2);
-//     $this->addCheckBox('group_status',
-//       ts('Status'),
-//       $groupStatuses,
-//       NULL, NULL, NULL, NULL, '&nbsp;&nbsp;&nbsp;'
-//     );
-
     $this->addButtons(array(
       array(
         'type' => 'refresh',
@@ -73,11 +47,9 @@ class CRM_Tournament_Team_Form_Search extends CRM_Core_Form {
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
     $parent = $this->controller->getParent();
-    $parent->set('group_type', 3);
+    $parent->set('group_type', teamGroupType());
     if (!empty($params)) {
-  	// TODO: Set group type to team, visible true, status Enabled
       $fields = array('title', 'created_by');
-      //, 'group_type', 'visibility', 'active_status', 'inactive_status');
       foreach ($fields as $field) {
         if (isset($params[$field]) &&
           !CRM_Utils_System::isNull($params[$field])

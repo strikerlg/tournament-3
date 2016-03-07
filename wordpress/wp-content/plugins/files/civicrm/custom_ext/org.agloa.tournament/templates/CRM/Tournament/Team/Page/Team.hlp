@@ -1,0 +1,6 @@
+{htxt id="manage_groups-title"}
+  {ts}Groups{/ts}
+{/htxt}
+{htxt id="manage_groups"}
+    <p>{ts}Use Teams to organize players (e.g. these players compete as 'The A Team').{/ts} {docURL page="user/organising-your-data/groups-and-tags"}</p>
+{/htxt}

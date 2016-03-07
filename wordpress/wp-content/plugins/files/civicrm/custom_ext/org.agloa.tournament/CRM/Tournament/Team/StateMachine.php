@@ -21,7 +21,7 @@ class CRM_Tournament_Team_StateMachine extends CRM_Core_StateMachine {
       'CRM_Tournament_Team_Form_Edit' => NULL,
       //'CRM_Tournament_Player_Form_Search_Basic' => NULL,
       'CRM_Tournament_Player_Form_Task_AddToTeam' => NULL,
-      'CRM_Tournament_Player_Form_Task_Result' => NULL,
+      //'CRM_Tournament_Player_Form_Task_Result' => NULL,
     );
 
     $this->addSequentialPages($this->_pages, $action);

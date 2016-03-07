@@ -2,8 +2,7 @@
 
 /**
  *
- * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @package Tournament
  * $Id$
  *
  */
@@ -144,23 +143,6 @@ class CRM_Tournament_Team_Form_Edit extends CRM_Core_Form {
   public function setDefaultValues() {
     $defaults = array();
 
-//     if (isset($this->_id)) {
-//       $defaults = $this->_groupValues;
-//       if (!empty($defaults['group_type'])) {
-//         $types = explode(CRM_Core_DAO::VALUE_SEPARATOR,
-//           substr($defaults['group_type'], 1, -1)
-//         );
-//         $defaults['group_type'] = array();
-//         foreach ($types as $type) {
-//           $defaults['group_type'][$type] = 1;
-//         }
-//       }
-
-//       if (CRM_Core_Permission::check('administer Multiple Organizations') && CRM_Core_Permission::isMultisiteEnabled()) {
-//         CRM_Contact_BAO_GroupOrganization::retrieve($this->_id, $defaults);
-//       }
-//     }
-
     if (empty($defaults['parents'])) {
       $defaults['parents'] = CRM_Core_BAO_Domain::getGroupId();
     }
@@ -201,38 +183,6 @@ class CRM_Tournament_Team_Form_Edit extends CRM_Core_Form {
     $this->add('text', 'title', ts('Name') . ' ',
       CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Group', 'title'), TRUE
     );
-
-//     $this->add('textarea', 'description', ts('Description') . ' ',
-//       CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Group', 'description')
-//     );
-
-//     $groupTypes = CRM_Core_OptionGroup::values('group_type', TRUE);
-//     $config = CRM_Core_Config::singleton();
-
-//     if (!empty($groupTypes)) {
-//       $this->addCheckBox('group_type',
-//         ts('Group Type'),
-//         $groupTypes,
-//         NULL, NULL, NULL, NULL, '&nbsp;&nbsp;&nbsp;'
-//       );
-//     }
-
-    //$this->add('select', 'visibility', ts('Visibility'), CRM_Core_SelectValues::groupVisibility(), TRUE);
-
-    //CRM-14190
-    //$parentGroups = self::buildParentGroups($this);
-
-//     if (CRM_Core_Permission::check('administer Multiple Organizations') && CRM_Core_Permission::isMultisiteEnabled()) {
-//       //group organization Element
-//       $props = array('api' => array('params' => array('contact_type' => 'Organization')));
-//       $this->addEntityRef('organization_id', ts('Organization'), $props);
-//     }
-
-    // is_reserved property CRM-9936
-//     $this->addElement('checkbox', 'is_reserved', ts('Reserved Group?'));
-//     if (!CRM_Core_Permission::check('administer reserved groups')) {
-//       $this->freeze('is_reserved');
-//     }
 
     //build custom data
     CRM_Custom_Form_CustomData::buildQuickForm($this);

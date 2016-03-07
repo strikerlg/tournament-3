@@ -154,7 +154,7 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
     $session = CRM_Core_Session::singleton();
     
     $urlParams = 'reset=1&force=1';
-    $session->replaceUserContext(CRM_Utils_System::url('civicrm/tournament/team/search', $urlParams));
+    $session->replaceUserContext(CRM_Utils_System::url('civicrm/tournament/team'));//search', $urlParams));
   }
   
   private function gamesWhere($gamesWhere, $gameField, $fieldName){
@@ -190,7 +190,7 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
     $this->assign("teamName", $this->_title);
 
     CRM_Utils_System::setTitle(ts('Add Players to %1', array(1 => $this->_title)));
-    $this->addDefaultButtons(ts("Add Selected Players to {$this->_title}"));
+    $this->addDefaultButtons(ts("Add Players on the right to {$this->_title}"));
   }
 
   /**
@@ -226,7 +226,8 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
   public static function formRule($params) {
     $errors = array();
   	//if (count($aclGroups) < 1) return; //TODO Error message
-  	// 5 pplayer limit
+  	// 1 player min
+  	// 5 player max
     return empty($errors) ? TRUE : $errors;
   }
 
@@ -264,7 +265,7 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
       $group = CRM_Core_PseudoConstant::group();
       $groupName = $group[$groupID];
     }
-// TODO load contactIDs from availablePlayers
+    
     $this->_contactIds = $params['availablePlayers'];
     list($total, $added, $notAdded) = CRM_Contact_BAO_GroupContact::addContactsToGroup($this->_contactIds, $groupID);
 
@@ -289,7 +290,7 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
 
     if ($this->_context === 'amtg') {
       CRM_Core_Session::singleton()
-        ->pushUserContext(CRM_Utils_System::url('civicrm/tournament/team/search', "reset=1&force=1"));
+        ->pushUserContext(CRM_Utils_System::url('civicrm/tournament/team'));//search', "reset=1&force=1"));
     }
   }
 

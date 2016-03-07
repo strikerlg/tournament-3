@@ -1,8 +1,6 @@
 <?php
 /* TODO
- * Study Group Controller, StateMachine
- * Invoices 2/14
- * Team Builder 3/1
+ * Invoices
  */
 require_once 'tournament.civix.php';
 require_once 'util.php';
@@ -138,29 +136,29 @@ function tournament_civicrm_navigationMenu(&$menu) {
 			'separator' => 1,
 	));
 
-// 	$path = null;
-// 	$name = "Scheduling";
-// 	_tournament_civix_insert_navigation_menu($menu, $path, array(
-// 			'label' => ts('Scheduling', array('domain' => $domain)),
-// 			'name' => $name,
-// 			'permission' => 'edit event participants',
-// 			));
+	$path = null;
+	$name = "Scheduling";
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Scheduling', array('domain' => $domain)),
+			'name' => $name,
+			'permission' => 'edit event participants',
+			));
 	
-// 		$path = $name;
-// 		_tournament_civix_insert_navigation_menu($menu, $path, array(
-// 				'label' => ts('New Team', array('domain' => $domain)),
-// 				'name' => 'NewTeam',
-// 				'url' => "civicrm/tournament/team/add?reset=1",
-// 				'permission' => 'edit event participants',
-// 				));
+		$path = $name;
+		_tournament_civix_insert_navigation_menu($menu, $path, array(
+				'label' => ts('New Team', array('domain' => $domain)),
+				'name' => 'NewTeam',
+				'url' => "civicrm/tournament/team/add?reset=1",
+				'permission' => 'edit event participants',
+				));
 	
-// 		$path = $name;
-// 		_tournament_civix_insert_navigation_menu($menu, $path, array(
-// 				'label' => ts('List/edit existing teams', array('domain' => $domain)),
-// 				'name' => 'teamList',
-// 				'url' => "civicrm/tournament/team/search",//?reset=1",
-// 				'permission' => 'edit event participants',
-// 				));
+		$path = $name;
+		_tournament_civix_insert_navigation_menu($menu, $path, array(
+				'label' => ts('List/edit existing teams', array('domain' => $domain)),
+				'name' => 'teamList',
+				'url' => "civicrm/tournament/team/search",//?reset=1",
+				'permission' => 'edit event participants',
+				));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -235,7 +233,7 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	$billingOrgsHTML .= "</ol>";
 	
 	$registrationProfilesHTML = "The next step is to enter contacts for your group(s). You probably only need to do this once per contact, ever."
-	. "<p>This only enters them into the database. it doesn't mean they are commited to attending a tournament.</p>"
+	. "<p>This only enters them into the database. it doesn't mean they are committed to attending a tournament.</p>"
 	. "You have access to contacts in these groups:<ol>";
 	$registrationProfiles = get_registrationProfiles($cid);	
 	foreach($registrationProfiles as $profile) {
@@ -271,6 +269,8 @@ function registrationReportRelativeURL($delim = "&"){
 	$id = 25; //TODO
 	return "civicrm/report/instance/{$id}{$delim}reset=1";
 }
+
+function teamGroupType(){ return 3; } //TODO
 
 function bulkOperationsRelativeURL($delim = "&"){
 	return "civicrm/contact/search{$delim}reset=1&force=1";

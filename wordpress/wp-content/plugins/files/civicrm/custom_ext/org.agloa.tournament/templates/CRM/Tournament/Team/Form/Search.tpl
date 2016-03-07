@@ -1,3 +1,4 @@
+{*debug*}
 <div class="crm-block crm-form-block crm-group-search-form-block">
 
 <h3>{ts}Find Teams{/ts}</h3>
@@ -48,9 +49,9 @@
   <thead>
     <tr>
       <th class='crm-group-name'>{ts}Name{/ts}</th>
-      <th class='crm-group-count'>{ts}Count{/ts}</th>
+      <th class='crm-group-count'>{ts}# of Players{/ts}</th>
       <th class='crm-group-created_by'>{ts}Created By{/ts}</th>
-      <th class='crm-group-description'>{ts}Description{/ts}</th>
+      {*<th class='crm-group-description'>{ts}Description{/ts}</th>*}
       <th class='crm-group-visibility'>{ts}Visibility{/ts}</th>
       {if $showOrgInfo}
       <th class='crm-group-org_info'>{ts}Organization{/ts}</th>
@@ -90,10 +91,10 @@ CRM.$(function($) {
         crmGroupSelector.fnDestroy();
       }
       var parentsOnly = 0;
-      var ZeroRecordText = '<div class="status messages">{/literal}{ts escape="js"}No matching Teams found for your search criteria. Suggestions:{/ts}{literal}<div class="spacer"></div><ul><li>{/literal}{ts escape="js"}Check your spelling.{/ts}{literal}</li><li>{/literal}{ts escape="js"}Try a different spelling or use fewer letters.{/ts}{literal}</li><li>{/literal}{ts escape="js"}Make sure you have enough privileges in the access control system.{/ts}{literal}</li></ul></div>';
+      var ZeroRecordText = '<div class="status messages">{/literal}{ts escape="js"}No matching teams found for your search criteria. Suggestions:{/ts}{literal}<div class="spacer"></div><ul><li>{/literal}{ts escape="js"}Check your spelling.{/ts}{literal}</li><li>{/literal}{ts escape="js"}Try a different spelling or use fewer letters.{/ts}{literal}</li><li>{/literal}{ts escape="js"}Make sure you have enough privileges in the access control system.{/ts}{literal}</li></ul></div>';
     } else {
         var parentsOnly = 1;
-        var ZeroRecordText = {/literal}'{ts escape="js"}<div class="status messages">No Teams have been created for this site.{/ts}</div>'{literal};
+        var ZeroRecordText = {/literal}'{ts escape="js"}<div class="status messages">No teams have been created for this site.{/ts}</div>'{literal};
     }
 
     // this argument should only be used on initial display i.e onPageLoad
@@ -102,7 +103,7 @@ CRM.$(function($) {
     }
 
     var columns = '';
-    var sourceUrl = {/literal}'{crmURL p="civicrm/ajax/grouplist" h=0 q="snippet=4"}'{literal};
+    var sourceUrl = {/literal}'{crmURL p="civicrm/tournament/ajax/teamlist" h=0 q="snippet=4"}'{literal};
     var showOrgInfo = {/literal}"{$showOrgInfo}"{literal};
     var $context = $('#crm-main-content-wrapper');
 
@@ -114,7 +115,7 @@ CRM.$(function($) {
                         {sClass:'crm-group-name'},
                         {sClass:'crm-group-count'},
                         {sClass:'crm-group-created_by'},
-                        {sClass:'crm-group-description', bSortable:false},
+                        //{sClass:'crm-group-description', bSortable:false},
                         {sClass:'crm-group-group_type'},
                         {sClass:'crm-group-visibility'},
                         {sClass:'crm-group-group_links', bSortable:false},
@@ -255,7 +256,7 @@ CRM.$(function($) {
       // child rows for this parent have already been retrieved so just show them
       $('.parent_is_' + parent_id ).show();
     } else {
-      var sourceUrl = {/literal}'{crmURL p="civicrm/ajax/grouplist" h=0 q="snippet=4"}'{literal};
+      var sourceUrl = {/literal}'{crmURL p="civicrm/tournament/ajax/teamlist" h=0 q="snippet=4"}'{literal};
       $.ajax( {
           "dataType": 'json',
           "url": sourceUrl,

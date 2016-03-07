@@ -108,4 +108,9 @@
     <title>New Team</title>
     <access_arguments>edit groups</access_arguments>
   </item>
+  <item>
+     <path>civicrm/tournament/ajax/teamlist</path>
+     <page_callback>CRM_Tournament_Team_Page_AJAX::getTeamList</page_callback>
+     <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

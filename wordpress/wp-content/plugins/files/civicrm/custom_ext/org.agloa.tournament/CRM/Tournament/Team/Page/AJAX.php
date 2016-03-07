@@ -2,7 +2,7 @@
 
 /**
  *
- * @package CRM
+ * @package Tournament
  *
  */
 
@@ -11,11 +11,11 @@
  */
 class CRM_Tournament_Team_Page_AJAX {
   /**
-   * Get list of groups.
+   * Get list of teams.
    *
    * @return array
    */
-  public static function getGroupList() {
+  public static function getTeamList() {
     $params = $_REQUEST;
 
     if (isset($params['parent_id'])) {
@@ -48,9 +48,13 @@ class CRM_Tournament_Team_Page_AJAX {
 
       $params['page'] = ($offset / $rowCount) + 1;
       $params['rp'] = $rowCount;
+      $params['group_type'] = teamGroupType();
+      $contact = billing_contact_get();
+      $params['created_by'] = $contact['sort_name']; 
 
-      // get group list
+      // get team list
       $groups = CRM_Contact_BAO_Group::getGroupListSelector($params);
+      // restrict to teams logged in user may access
 
       // if no groups found with parent-child hierarchy and logged in user say can view child groups only (an ACL case),
       // go ahead with flat hierarchy, CRM-12225
@@ -64,12 +68,12 @@ class CRM_Tournament_Team_Page_AJAX {
         }
       }
 
-      $iFilteredTotal = $iTotal = $params['total'];
+      $iFilteredTotal = $iTotal = count($groups);//$params['total'];
       $selectorElements = array(
         'group_name',
         'count',
         'created_by',
-        'group_description',
+      'group_description',
         'group_type',
         'visibility',
         'org_info',
