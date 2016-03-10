@@ -51,7 +51,8 @@
       <th class='crm-group-name'>{ts}Name{/ts}</th>
       <th class='crm-group-count'>{ts}# of Players{/ts}</th>
       <th class='crm-group-created_by'>{ts}Created By{/ts}</th>
-      {*<th class='crm-group-description'>{ts}Description{/ts}</th>*}
+      <th class='crm-group-description'>{ts}Description{/ts}</th>
+      <th class='crm-group-group_type'>{ts}Group Type{/ts}</th>
       <th class='crm-group-visibility'>{ts}Visibility{/ts}</th>
       {if $showOrgInfo}
       <th class='crm-group-org_info'>{ts}Organization{/ts}</th>
@@ -85,7 +86,7 @@ CRM.$(function($) {
         $('table.crm-group-selector', $context).dataTable().fnDraw();
     });
 
-  function buildGroupSelector( filterSearch, parentsOnlyArg ) {
+  function buildGroupSelector( filterSearch, parentsOnlyArg ) { 
     if ( filterSearch ) {
       if (typeof crmGroupSelector !== 'undefined') {
         crmGroupSelector.fnDestroy();
@@ -106,7 +107,7 @@ CRM.$(function($) {
     var sourceUrl = {/literal}'{crmURL p="civicrm/tournament/ajax/teamlist" h=0 q="snippet=4"}'{literal};
     var showOrgInfo = {/literal}"{$showOrgInfo}"{literal};
     var $context = $('#crm-main-content-wrapper');
-
+    
     crmGroupSelector = $('table.crm-group-selector', $context).dataTable({
         "bFilter"    : false,
         "bAutoWidth" : false,
@@ -115,7 +116,7 @@ CRM.$(function($) {
                         {sClass:'crm-group-name'},
                         {sClass:'crm-group-count'},
                         {sClass:'crm-group-created_by'},
-                        //{sClass:'crm-group-description', bSortable:false},
+                        {sClass:'crm-group-description', bSortable:false},
                         {sClass:'crm-group-group_type'},
                         {sClass:'crm-group-visibility'},
                         {sClass:'crm-group-group_links', bSortable:false},
