@@ -87,6 +87,7 @@ CRM.$(function($) {
     });
 
   function buildGroupSelector( filterSearch, parentsOnlyArg ) { 
+  	//alert("filterSearch = " + filterSearch + " parentsOnlyArg = " + parentsOnlyArg );
     if ( filterSearch ) {
       if (typeof crmGroupSelector !== 'undefined') {
         crmGroupSelector.fnDestroy();

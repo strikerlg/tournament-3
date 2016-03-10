@@ -61,12 +61,6 @@
     <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
   </item>
   <item>
-    <path>civicrm/tournament/teams</path>
-    <page_callback>CRM_Tournament_Form_Teams</page_callback>
-    <title>Teams</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
-  <item>
     <path>civicrm/tournament/BillingContact</path>
     <page_callback>CRM_Tournament_Form_BillingContact</page_callback>
     <title>Billing Contact</title>
