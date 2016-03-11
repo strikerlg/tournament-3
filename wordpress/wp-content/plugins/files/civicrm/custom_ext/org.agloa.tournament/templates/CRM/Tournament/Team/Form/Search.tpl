@@ -1,4 +1,5 @@
 {*debug*}
+{* MFS: 03/11/2016 suppress type, visibility and status
 <div class="crm-block crm-form-block crm-group-search-form-block">
 
 <h3>{ts}Find Teams{/ts}</h3>
@@ -154,9 +155,10 @@ CRM.$(function($) {
           $(nRow).addClass(cl).attr({id: 'row_' + id, 'data-id': id, 'data-entity': 'group'});
           //$('td:eq(0)', nRow).wrapInner('<span class="crm-editable crmf-title" />');
           $('td:eq(1)', nRow).addClass('right');
+          // Editable columns?
           if (CRM.checkPerm('edit groups')) {
-            $('td:eq(3)', nRow).wrapInner('<div class="crm-editable crmf-description" data-type="textarea" />');
-            $('td:eq(5)', nRow).wrapInner('<div class="crm-editable crmf-visibility" data-type="select" />');
+            //$('td:eq(3)', nRow).wrapInner('<div class="crm-editable crmf-description" data-type="textarea" />');
+            //$('td:eq(5)', nRow).wrapInner('<div class="crm-editable crmf-visibility" data-type="select" />');
           }
           if (parentsOnly) {
             if ($(nRow).hasClass('crm-group-parent')) {
@@ -277,9 +279,9 @@ CRM.$(function($) {
               }
               appendHTML += '<td class="right">' + val.count + "</td>";
               appendHTML += "<td>" + val.created_by + "</td>";
-              appendHTML += '<td class="crm-editable crmf-description" data-type="textarea">' + (val.group_description || '') + "</td>";
-              appendHTML += "<td>" + val.group_type + "</td>";
-              appendHTML += '<td class="crm-editable crmf-visibility" data-type="select">' + val.visibility + "</td>";
+              //appendHTML += '<td class="crm-editable crmf-description" data-type="textarea">' + (val.group_description || '') + "</td>";
+              //appendHTML += "<td>" + val.group_type + "</td>";
+              //appendHTML += '<td class="crm-editable crmf-visibility" data-type="select">' + val.visibility + "</td>";
               if (showOrgInfo) {
                 appendHTML += "<td>" + val.org_info + "</td>";
               }

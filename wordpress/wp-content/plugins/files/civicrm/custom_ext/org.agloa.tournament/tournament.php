@@ -141,7 +141,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Scheduling', array('domain' => $domain)),
 			'name' => $name,
-			'permission' => 'edit event participants',
+			'permission' => 'edit all contacts',
 			));
 	
 		$path = $name;
@@ -149,7 +149,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 				'label' => ts('New Team', array('domain' => $domain)),
 				'name' => 'NewTeam',
 				'url' => "civicrm/tournament/team/add?reset=1",
-				'permission' => 'edit event participants',
+				'permission' => 'edit all contacts',
 				));
 	
 		$path = $name;
@@ -157,7 +157,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 				'label' => ts('List/edit existing teams', array('domain' => $domain)),
 				'name' => 'teamList',
 				'url' => "civicrm/tournament/team/search",//?reset=1",
-				'permission' => 'edit event participants',
+				'permission' => 'edit all contacts',
 				));
 
 	$path = null;
