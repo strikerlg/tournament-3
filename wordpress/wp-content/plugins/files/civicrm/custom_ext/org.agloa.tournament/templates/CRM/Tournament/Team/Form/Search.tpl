@@ -1,5 +1,5 @@
 {*debug*}
-{* MFS: 03/11/2016 suppress type, visibility and status
+{* MFS: 03/11/2016 suppress type, visibility and status *}
 <div class="crm-block crm-form-block crm-group-search-form-block">
 
 <h3>{ts}Find Teams{/ts}</h3>
