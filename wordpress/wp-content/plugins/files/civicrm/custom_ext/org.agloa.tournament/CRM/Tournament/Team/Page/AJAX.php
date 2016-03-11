@@ -48,16 +48,17 @@ class CRM_Tournament_Team_Page_AJAX {
 
 			$params['page'] = ($offset / $rowCount) + 1;
 			$params['rp'] = $rowCount;
-			$params['group_type'] = teamGroupType();
+			$params['group_type'] = teamGroupType();			
+			
+			// restrict to teams logged in user may access
 			$contact = billing_contact_get(); //@todo remove for admin
 			$params['created_by'] = $contact['sort_name'];
 
 			// get team list
 			$groups = self::getTeamListSelector($params);
-			// restrict to teams logged in user may access
 
 			// if no groups found with parent-child hierarchy and logged in user say can view child groups only (an ACL case),
-			// go ahead with flat hierarchy, CRM-12225
+			// go ahead with flat hierarchy
 			if (empty($groups)) {
 				$groupsAccessible = CRM_Core_PseudoConstant::group();
 				$parentsOnly = CRM_Utils_Array::value('parentsOnly', $params);
@@ -192,7 +193,6 @@ class CRM_Tournament_Team_Page_AJAX {
 		if (!empty($params['sort'])) {
 			$orderBy = ' ORDER BY ' . CRM_Utils_Type::escape($params['sort'], 'String');
 
-			// CRM-16905 - Sort by count cannot be done with sql
 			if (strpos($params['sort'], 'count') === 0) {
 				$orderBy = $limit = '';
 			}

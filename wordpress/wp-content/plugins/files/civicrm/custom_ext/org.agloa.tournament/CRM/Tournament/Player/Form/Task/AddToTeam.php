@@ -77,27 +77,12 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
     $session->set('amtgID', $this->_id);
     
     //@todo Exit more gracefully if id still isn't set
-    if (!isset($this->_id)) return;   
-    
-    // Start with all registered players
-//     $event_type_id = 7;
-//     $tournamentID = 1; //@todo    
-//     $eventParams = array('id' => $tournamentID, 'event_type_id' => $event_type_id);
-//     $event = CRM_Event_BAO_Event::retrieve($eventParams, $eventDetails[$eventId]);
-    
-//     $params = array('event_id' => $event->id);
-//     CRM_Event_BAO_Participant::getValues($params, $defaults, $ids);
-//     foreach ($defaults as $participant) 
-//     {
-//     	$contact_id = $participant['contact_id'];
-//     	$contacts[$contact_id] = $contact_id;
-//     }
-    // Limit by acl?
-    
+    if (!isset($this->_id)) return;  
     
     $this->_teamValues = array();
     $params = array('id' => $this->_id);
     $this->_team = CRM_Contact_BAO_Group::retrieve($params, $this->_teamValues);
+    
     $this->_context = $this->get('context');
     
     $this->findTeamPlayers();
@@ -119,11 +104,27 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
   	}
   }
   
-  private function findEligiblePlayers(){
-  	// Retrieve groups available to current user
+  private function findEligiblePlayers(){	
+  	// Retrieve registration groups available to current user
   	$contact_id = user_id_get();
   	$aclGroups = get_aclGroups($contact_id);
   	$registrationGroups = get_registrationGroups($aclGroups);
+  	
+  	// Start with all registered players
+//   	$event_type_id = 7;
+//   	$tournamentID = 1; //@todo
+//   	$eventParams = array('id' => $tournamentID, 'event_type_id' => $event_type_id);
+//   	$event = CRM_Event_BAO_Event::retrieve($eventParams, $eventDetails[$eventId]);
+  	
+//   	$params = array('event_id' => $event->id);
+//   	CRM_Event_BAO_Participant::getValues($params, $defaults, $ids);	
+  	
+//   	foreach ($defaults as $participant)
+//   	{
+//   		$contact_id = $participant['contact_id'];
+//   		$contacts[$contact_id] = $contact_id;
+//   	}
+  	
   	$groups = "(";
   	foreach ($registrationGroups as $group){
   		$groups .= "{$group["id"]},";

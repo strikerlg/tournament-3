@@ -51,12 +51,12 @@
       <th class='crm-group-name'>{ts}Name{/ts}</th>
       <th class='crm-group-count'>{ts}# of Players{/ts}</th>
       <th class='crm-group-created_by'>{ts}Created By{/ts}</th>
-      <th class='crm-group-description'>{ts}Description{/ts}</th>
+      {*<th class='crm-group-description'>{ts}Description{/ts}</th>
       <th class='crm-group-group_type'>{ts}Group Type{/ts}</th>
       <th class='crm-group-visibility'>{ts}Visibility{/ts}</th>
       {if $showOrgInfo}
       <th class='crm-group-org_info'>{ts}Organization{/ts}</th>
-      {/if}
+      {/if}*}
       <th class='crm-group-group_links nosort'>&nbsp;</th>
       <th class='hiddenElement'>&nbsp;</th>
     </tr>
@@ -117,9 +117,9 @@ CRM.$(function($) {
                         {sClass:'crm-group-name'},
                         {sClass:'crm-group-count'},
                         {sClass:'crm-group-created_by'},
-                        {sClass:'crm-group-description', bSortable:false},
-                        {sClass:'crm-group-group_type'},
-                        {sClass:'crm-group-visibility'},
+                        {sClass:'crm-group-description', bVisible:false, bSortable:false},
+                        {sClass:'crm-group-group_type', bVisible:false},
+                        {sClass:'crm-group-visibility', bVisible:false},
                         {sClass:'crm-group-group_links', bSortable:false},
                         {/literal}{if $showOrgInfo}{literal}
                         {sClass:'crm-group-org_info', bSortable:false},
@@ -249,7 +249,9 @@ CRM.$(function($) {
       });
     }
   });
-  function showChildren( parent_id, showOrgInfo, group_id, levelClass) {
+  
+  // This is probably obsolete for teams
+  function showChildren( parent_id, showOrgInfo, group_id, levelClass) { 
     var rowID = '#row_' + parent_id;
     if ( group_id ) {
       rowID = '#row_' + parent_id + '_' + group_id;
