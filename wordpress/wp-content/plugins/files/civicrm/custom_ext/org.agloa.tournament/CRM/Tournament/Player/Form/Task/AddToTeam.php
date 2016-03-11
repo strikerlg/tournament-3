@@ -6,6 +6,24 @@
  *
  */
 
+// @todo SELECT id, title FROM civicrm_event tournament WHERE event_type_id = 7 AND tournament.is_active = 1 ORDER BY tournament.start_date DESC LIMIT 0 , 1
+/* @todo 
+SELECT player.contact_id AS ID, contact.sort_name as name, team.id AS TeamID, team.title as Team FROM civicrm_participant AS player 
+JOIN civicrm_contact AS contact ON player.contact_id = contact.id
+JOIN civicrm_group_contact AS team_players ON team_players.contact_id = player.contact_id
+JOIN civicrm_group AS team ON team.id = team_players.group_id
+WHERE event_id = 1 AND player.status_id = 1 AND role_id LIKE 1 AND player.is_test = 0
+AND team.group_type LIKE '%3%'
+ */
+/* @todo
+SELECT player.id as PlayerID, player.sort_name AS PlayerName, team.id AS TeamID, team.title AS TeamName
+, equations_21 AS E, on_sets_22 AS O, linguishtik_23 AS L, propaganda_24 AS P, presidents_25 AS M, world_events_26 AS A, wff_n_proof_27 AS W 
+FROM civicrm_value_team_data_7 AS team_games
+JOIN civicrm_group AS team ON team.id = team_games.entity_id
+JOIN civicrm_group_contact AS team_player ON team_player.group_id = team.id
+JOIN civicrm_contact AS player ON player.id = team_player.contact_id
+WHERE team.group_type LIKE '%3%' AND team.is_active = 1 AND team.is_hidden = 0
+ */
 /**
  * This class provides the functionality to group players into teams.
  */
