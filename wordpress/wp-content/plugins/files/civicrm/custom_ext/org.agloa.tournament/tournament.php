@@ -1,9 +1,31 @@
 <?php
 /* TODO
- * Invoices
+ * Invoices - cost sheet
  */
 require_once 'tournament.civix.php';
 require_once 'util.php';
+//require_once 'Team.php';
+
+class Tournament extends CRM_Event_BAO_Event {
+	public static function currentTournament()
+	{
+		$params = array('event_type_id' => 7, 'is_active' => 1);
+		$tournament = self::retrieve($params, $tournamentArray);
+		return $tournament;
+	}
+	
+	public static function currentTournamentID()
+	{
+		$tournament = self::currentTournament();
+		return $tournament->id;
+	}
+	
+	public static function currentTournamentName()
+	{
+		$tournament = self::currentTournament();
+		return $tournament->title;
+	}
+}
 
 /**
  * Implements hook_civicrm_navigationMenu().

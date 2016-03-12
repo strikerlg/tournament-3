@@ -6,6 +6,8 @@
  *
  */
 
+require_once 'Team.php';
+
 // @todo SELECT id, title FROM civicrm_event tournament WHERE event_type_id = 7 AND tournament.is_active = 1 ORDER BY tournament.start_date DESC LIMIT 0 , 1
 /* @todo 
 SELECT player.contact_id AS ID, contact.sort_name as name, team.id AS TeamID, team.title as Team FROM civicrm_participant AS player 
@@ -18,6 +20,14 @@ AND team.group_type LIKE '%3%'
 /* @todo
 SELECT player.id as PlayerID, player.sort_name AS PlayerName, team.id AS TeamID, team.title AS TeamName
 , equations_21 AS E, on_sets_22 AS O, linguishtik_23 AS L, propaganda_24 AS P, presidents_25 AS M, world_events_26 AS A, wff_n_proof_27 AS W 
+FROM civicrm_value_team_data_7 AS team_games
+JOIN civicrm_group AS team ON team.id = team_games.entity_id
+JOIN civicrm_group_contact AS team_player ON team_player.group_id = team.id
+JOIN civicrm_contact AS player ON player.id = team_player.contact_id
+WHERE team.group_type LIKE '%3%' AND team.is_active = 1 AND team.is_hidden = 0
+ */
+/*@todo
+ * SELECT player.id as PlayerID, equations_21 AS Game, team.id AS TeamID
 FROM civicrm_value_team_data_7 AS team_games
 JOIN civicrm_group AS team ON team.id = team_games.entity_id
 JOIN civicrm_group_contact AS team_player ON team_player.group_id = team.id
@@ -313,16 +323,33 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
     $errors = array();
 		define("MIN_PLAYERS", 1); //@todo disable commit until >=
 		define("MAX_PLAYERS", 5); //@todo disable left until <
-  	$playerCount = count($params['availablePlayers']);
+		define("CONTROL_NAME", 'availablePlayers');
+		
+  	$playerIDs = $params[CONTROL_NAME];
+  	$playerCount = count($playerIDs);
     
     if ($playerCount < MIN_PLAYERS ||  $playerCount > MAX_PLAYERS) {
-    	$errors['availablePlayers'] = "Please add between " . MIN_PLAYERS . " and " . MAX_PLAYERS . " players.";
-    }
-//     elseif (empty($params['group_option']) && empty($params['group_id'])) {
-//     	$errors['group_id'] = "Select Group is a required field.";
-//     }
+	    self::addError($errors[CONTROL_NAME], 
+    		"Please add between " . MIN_PLAYERS . " and " . MAX_PLAYERS . " players.");
+    }    
+     
+    $session = CRM_Core_Session::singleton();
+    $teamID = $session->get('amtgID');
+    foreach($playerIDs as $playerID) self::checkTeamPlayer($teamID, $playerID, $errors[CONTROL_NAME]);
     
     return empty($errors) ? TRUE : $errors;
+  }
+  
+  private function checkTeamPlayer($teamID, $playerID, &$errors){	
+  	$otherTeams = Team::OtherTeams($teamID, $playerID);
+  	if (isset($otherTeams))
+  		self::addError($errors, $otherTeams);
+  }
+  
+  private function addError(&$errors, $errorMessage){
+  	if (empty($errors)) $errors = "";
+  	if (is_array($errorMessage)) foreach ($errorMessage as $message) $errors .= "<p>{$message}</p>";
+  	else $errors .= "<p>{$errorMessage}</p>";
   }
 
   /**
