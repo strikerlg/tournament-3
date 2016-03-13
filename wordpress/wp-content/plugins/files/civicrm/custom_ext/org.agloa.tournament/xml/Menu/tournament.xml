@@ -9,12 +9,6 @@
     <weight>800</weight>
   </item>
   <item>
-    <path>civicrm/tournament/info</path>
-    <page_callback>CRM_Tournament_Page_TournamentInfo</page_callback>
-    <title>TournamentInfo</title>
-    <access_arguments>access CiviCRM,access CiviEvent</access_arguments>
-  </item>
-  <item>
     <path>civicrm/tournament/register</path>
     <page_callback>CRM_Tournament_Controller_Registration</page_callback>
     <title>Tournament Registration</title>

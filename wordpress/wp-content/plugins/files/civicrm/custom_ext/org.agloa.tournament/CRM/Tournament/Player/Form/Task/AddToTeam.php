@@ -111,34 +111,14 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
   	$aclGroups = get_aclGroups($contact_id);
   	$registrationGroups = get_registrationGroups($aclGroups);
   	
-  	// Start with all registered players
-//   	$event_type_id = 7;
-//   	$tournamentID = 1; //@todo
-//   	$eventParams = array('id' => $tournamentID, 'event_type_id' => $event_type_id);
-//   	$event = CRM_Event_BAO_Event::retrieve($eventParams, $eventDetails[$eventId]);
-  	
-//   	$params = array('event_id' => $event->id);
-//   	CRM_Event_BAO_Participant::getValues($params, $defaults, $ids);	
-  	
-//   	foreach ($defaults as $participant)
-//   	{
-//   		$contact_id = $participant['contact_id'];
-//   		$contacts[$contact_id] = $contact_id;
-//   	}
-  	
   	$groups = "(";
-  	foreach ($registrationGroups as $group){
-  		$groups .= "{$group["id"]},";
-  	}
+  	foreach ($registrationGroups as $group) $groups .= "{$group["id"]},";
   	$groups = rtrim($groups, ",");
   	$groups .= ")";
   	$groupWhere = " group_id IN {$groups}";
   	
   	// Retrieve team games
-  	$query = "
-  	SELECT entity_id AS ID, equations_21 AS E, on_sets_22 AS O, linguishtik_23 AS L, propaganda_24 AS P, presidents_25 AS M, world_events_26 AS A, wff_n_proof_27 AS W
-  	FROM civicrm_value_team_data_7 AS team_games WHERE `entity_id` = %1
-  	";
+  	$query = "SELECT entity_id AS ID, equations_21 AS E, on_sets_22 AS O, linguishtik_23 AS L, propaganda_24 AS P, presidents_25 AS M, world_events_26 AS A, wff_n_proof_27 AS W FROM civicrm_value_team_data_7 AS team_games WHERE `entity_id` = %1";
 
   	$params = array(1 => array($this->_id, 'Integer'));
   	$teamGames = CRM_Core_DAO::executeQuery($query, $params);
@@ -185,14 +165,6 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
   	$playerRole = '1';
   	$groupType = '%4%5%'; //@todo
 
-  	//TODO Subract/Union players already on a team
-  	// Event Participants w/ role = player > contacts in groups playing that game
-  	//     JOIN civicrm_group AS Teams ON DistrictPlayer.group_id = District.ID
-  	// Teams.group_type LIKE %4
-  	/*
-  	 * SELECT `id`, `name`, `title`, `created_id` FROM `civicrm_group` WHERE `is_active` = 1 AND `group_type` LIKE '%3%' AND `is_hidden` = 0
-  	*/
-
   	$params = array(
   			1 => array($eventID, 'Integer'),
   			2 => array($activeStatus, 'Integer'),
@@ -202,20 +174,28 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
 
   	$playerRecords = CRM_Core_DAO::executeQuery($query, $params);
   	while ($playerRecords->fetch()) {
-  		$displayText = "{$playerRecords->Name} ({$playerRecords->DistrictName})";
-  		 
-  		//@todo don't hard code game codes
-  		$gameText = "";
-  		if (strlen($playerRecords->E )> 0) $gameText .= 'E';
-  		if (strlen($playerRecords->O )> 0) $gameText .= 'O';
-  		if (strlen($playerRecords->L )> 0) $gameText .= 'L';
-  		if (strlen($playerRecords->P )> 0) $gameText .= 'P';
-  		if (strlen($playerRecords->M )> 0) $gameText .= 'M';
-  		if (strlen($playerRecords->A )> 0) $gameText .= 'A';
-  		if (strlen($playerRecords->W )> 0) $gameText .= 'W';
-  		if (strlen($gameText)> 0) $displayText .= " ({$gameText})";
+  		//@todo don't include players already on a team
+  		$playerID = $playerRecords->PlayerID;
+  		$teamID = $this->_id;
+  		unset($errors);
+  		self::checkTeamPlayer($teamID, $playerID, $errors);
+  		if (!isset($errors))
+  		{
+  			$displayText = "{$playerRecords->Name} ({$playerRecords->DistrictName})";
+  				
+  			//@todo don't hard code game codes
+  			$gameText = "";
+  			if (strlen($playerRecords->E )> 0) $gameText .= 'E';
+  			if (strlen($playerRecords->O )> 0) $gameText .= 'O';
+  			if (strlen($playerRecords->L )> 0) $gameText .= 'L';
+  			if (strlen($playerRecords->P )> 0) $gameText .= 'P';
+  			if (strlen($playerRecords->M )> 0) $gameText .= 'M';
+  			if (strlen($playerRecords->A )> 0) $gameText .= 'A';
+  			if (strlen($playerRecords->W )> 0) $gameText .= 'W';
+  			if (strlen($gameText)> 0) $displayText .= " ({$gameText})";
 
-  		$this->_eligiblePlayers[$playerRecords->PlayerID] = $displayText;
+  			$this->_eligiblePlayers[$playerRecords->PlayerID] = $displayText;
+  		}
   	}
   }
   

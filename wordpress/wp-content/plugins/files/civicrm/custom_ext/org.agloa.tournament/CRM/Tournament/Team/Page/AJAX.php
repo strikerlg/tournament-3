@@ -1,10 +1,10 @@
 <?php
-
 /**
  *
  * @package Tournament
  *
  */
+require_once 'Team.php';
 
 /**
  * This class contains the functions that are called using AJAX (jQuery)
@@ -150,7 +150,8 @@ class CRM_Tournament_Team_Page_AJAX {
 				$value['class'][] = 'crm-entity';
 				$groupList[$id]['class'] = $value['id'] . ',' . implode(' ', $value['class']);
 
-				$groupList[$id]['group_description'] = CRM_Utils_Array::value('description', $value);
+				$groupList[$id]['group_description'] = Team::teamString($id);
+				//CRM_Utils_Array::value('description', $value);
 				if (!empty($value['group_type'])) {
 					$groupList[$id]['group_type'] = $value['group_type'];
 				}
@@ -239,7 +240,6 @@ class CRM_Tournament_Team_Page_AJAX {
 			$groupPermissions[] = CRM_Core_Permission::DELETE;
 		}
 
-		// CRM-9936
 		$reservedPermission = CRM_Core_Permission::check('administer reserved groups');
 
 		$links = self::actionLinks();
@@ -284,7 +284,6 @@ class CRM_Tournament_Team_Page_AJAX {
 
 				$action = array_sum(array_keys($newLinks));
 
-				// CRM-9936
 				if (array_key_exists('is_reserved', $object)) {
 					//if group is reserved and I don't have reserved permission, suppress delete/edit
 					if ($object->is_reserved && !$reservedPermission) {

@@ -78,6 +78,34 @@ class Team extends CRM_Contact_BAO_Group {
 	}
 	
 	/**
+	 * create a team description from competitions & players
+	 *
+	 * @param integer $teamID
+	 *
+	 * @return description
+	 */
+	public static function teamString($teamID){	
+		$team = self::getTeam($teamID, $defaults);
+		return $team->toString();
+	}
+	
+	public function toString(){
+		$description = "";
+		foreach($this->competitions as $competition => $div)
+		{
+			if (strlen($div)>0) $description .= "{$competition}({$div}) ";
+		}
+		$description .= "<br/>";
+		
+		foreach($this->players as $id => $value){
+			$params = array('id' => $id);
+			$player = CRM_Contact_BAO_Contact::retrieve($params, $defaults);
+			$description .= "{$player->display_name}, ";
+		}
+			$description = rtrim($description, ", ");
+		return $description;
+	}
+	/**
 	 * lookup teams by competition
 	 *
 	 * @param string $fieldName
@@ -117,20 +145,21 @@ class Team extends CRM_Contact_BAO_Group {
 		$params = array('id' => $playerID);
 		$player = CRM_Contact_BAO_Contact::retrieve($params, $defaults);
 		$playerName = $player->sort_name;
-		// Retrieve group from $teamID
+		
 		$team = Team::getTeam($teamID, $values);
-
-		// Retrieve games from $team
-		// Is the team playing E?
-		$game = 'E';
-		$field = self::$_E;
-		$team->otherTeamGamePlayerMessages($game, $field, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('E', self::$_E, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('O', self::$_O, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('L', self::$_L, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('P', self::$_P, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('M', self::$_M, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('A', self::$_A, $playerID, $playerName, $tournamentName, $messages);
+		$team->otherTeamGamePlayerMessages('W', self::$_W, $playerID, $playerName, $tournamentName, $messages);
 		return $messages;
 	}
 	
 	private function otherTeamGamePlayerMessages($game, $field, $playerID, $playerName, $tournamentName, &$messages)
 	{
-		if (isset($this->competitions[$game]))
+		if (isset($this->competitions[$game]) && strlen($this->competitions[$game]) > 0)
 		{
 			$otherTeams = self::retrieveByCompetition($field, $this->competitions[$game], $this->id);
 			// Is this player on any of those teams?
@@ -138,7 +167,7 @@ class Team extends CRM_Contact_BAO_Group {
 				if ($otherTeam->contains($playerID))
 				{
 					$teamID = $otherTeam->id;
-					$messages[] .= "<p>$playerName is already on another {$game} team ({$otherTeam->title}) for tournament: {$tournamentName}</p>";
+					$messages[] .= "$playerName is already on another {$game} team ({$otherTeam->title}) for tournament: {$tournamentName}";
 				}
 			}
 		}
