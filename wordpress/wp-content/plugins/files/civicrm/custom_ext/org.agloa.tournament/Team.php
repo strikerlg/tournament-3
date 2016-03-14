@@ -141,7 +141,7 @@ class Team extends CRM_Contact_BAO_Group {
 	 * static function to find players on other teams for any game
 	*/
 	public static function OtherTeams($teamID, $playerID){
-		$tournamentName = Tournament::currentTournamentName();
+		$tournamentName = "2016";// @todo Tournament::currentTournamentName();
 		$params = array('id' => $playerID);
 		$player = CRM_Contact_BAO_Contact::retrieve($params, $defaults);
 		$playerName = $player->sort_name;
