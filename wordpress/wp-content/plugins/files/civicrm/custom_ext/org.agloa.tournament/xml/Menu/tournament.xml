@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <menu>
   <item>
+    <path>civicrm/tournament</path>
+    <page_callback>CRM_Tournament_Page_Registration</page_callback>
+    <title>Tournament Dashboard</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <page_type>1</page_type>
+    <weight>800</weight>
+  </item>
+  <item>
     <path>civicrm/tournament/register</path>
     <page_callback>CRM_Tournament_Controller_Registration</page_callback>
     <title>Tournament Registration</title>
