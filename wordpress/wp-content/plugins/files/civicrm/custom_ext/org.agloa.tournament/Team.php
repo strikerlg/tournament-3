@@ -96,13 +96,13 @@ class Team extends CRM_Contact_BAO_Group {
 			if (strlen($div)>0) $description .= "{$competition}({$div}) ";
 		}
 		$description .= "<br/>";
-		
+
 		foreach($this->players as $id => $value){
 			$params = array('id' => $id);
 			$player = CRM_Contact_BAO_Contact::retrieve($params, $defaults);
 			$description .= "{$player->display_name}, ";
 		}
-			$description = rtrim($description, ", ");
+		$description = rtrim($description, ", ");
 		return $description;
 	}
 	/**
