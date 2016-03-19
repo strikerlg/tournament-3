@@ -151,36 +151,34 @@ function tournament_civicrm_navigationMenu(&$menu) {
 	
 	$path = path();
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
+			'label' => ts('Team Builder', array('domain' => $domain)),
+			'name' => "teamBuilder",
+			'permission' => 'edit groups',
+			'separator' => 1,
+			));
+	
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/teamBuilder", array(
+				'label' => ts('New Team', array('domain' => $domain)),
+				'name' => 'NewTeam',
+				'url' => "civicrm/tournament/team/add?reset=1",
+				'permission' => 'edit groups',
+				));
+	
+		_tournament_civix_insert_navigation_menu($menu, "{$path}/teamBuilder", array(
+				'label' => ts('List/edit existing teams', array('domain' => $domain)),
+				'name' => 'teamList',
+				'url' => "civicrm/tournament/team/search",//?reset=1",
+				'permission' => 'edit groups',
+				));
+	
+	$path = path();
+	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Advanced Operations', $domain),
 			'name' => 'bulkOperations',
 			'permission' => 'edit event participants',
 			'url' => bulkOperationsRelativeURL("?"),
 			'separator' => 1,
 	));
-
-	$path = null;
-	$name = "Scheduling";
-	_tournament_civix_insert_navigation_menu($menu, $path, array(
-			'label' => ts('Scheduling', array('domain' => $domain)),
-			'name' => $name,
-			'permission' => 'edit all contacts',
-			));
-	
-		$path = $name;
-		_tournament_civix_insert_navigation_menu($menu, $path, array(
-				'label' => ts('New Team', array('domain' => $domain)),
-				'name' => 'NewTeam',
-				'url' => "civicrm/tournament/team/add?reset=1",
-				'permission' => 'edit all contacts',
-				));
-	
-		$path = $name;
-		_tournament_civix_insert_navigation_menu($menu, $path, array(
-				'label' => ts('List/edit existing teams', array('domain' => $domain)),
-				'name' => 'teamList',
-				'url' => "civicrm/tournament/team/search",//?reset=1",
-				'permission' => 'edit all contacts',
-				));
 
 	$path = null;
 	$name = "TournamentAdmin";
@@ -266,20 +264,37 @@ function tournament_civicrm_dashboard( $contactID, &$contentPlacement ) {
 	}
 	$registrationProfilesHTML .= "</ol>";
 
-	$regesterParticipantHTML = 
-	"Once you have entered all the contacts for your group(s), you can register them to attend the tournament. Be sure to indicate which competitions they will enter. That's important for the (coming soon) team registration step. <ul>"
+	$registerParticipantHTML = 
+	"Once you have entered all the contacts for your group(s), you can register them to attend the tournament. Be sure to indicate which competitions they will enter. That's important for the team registration step. <ul>"
 	. "<li><a href = \"" . baseURL() . registrationRelativeURL() 
 	."\">Use this link to register a contact for the tournament</a>.</li>"
 	. "<li><a href = \"" . baseURL() . registrationReportRelativeURL() 
 	."\">Use this link to list/edit contacts already registered for the tournament</a>.</li>"	
 	."</ul>";
+
+	$buildTeamsHTML = 
+	"Once you have registered all the players for your district/league, you can combine them into teams.<ul>"
+	. "<li><a href = \"" . baseURL() . newTeamRelativeURL() 
+	."\">Use this link to start a start a new team</a>.</li>"
+	. "<li><a href = \"" . baseURL() . listTeamsRelativeURL() 
+	."\">Use this link to list/edit your teams</a>.</li>"	
+	."</ul>";
 	
 	return array( '1. Your Contact Data' => $currentUserHTML,
 			'2. Billing Organizations (e.g., School Districts)' => $billingOrgsHTML,
 			'3. Contacts (Players, coaches, etc.)' => $registrationProfilesHTML,
-			'4. Register Contacts for Tournament' => $regesterParticipantHTML,
-			// TODO cost sheet/invoice
+			'4. Register Contacts for Tournament' => $registerParticipantHTML,
+			'5. Combine Registered Players into Teams' => $buildTeamsHTML,
+			// @todo cost sheet/invoice
 	);
+}
+
+function newTeamRelativeURL($delim = "&"){
+	return "civicrm/tournament/team/add{$delim}reset=1";
+}
+
+function listTeamsRelativeURL($delim = "&"){
+	return "civicrm/tournament/team/search";
 }
 
 function registrationRelativeURL($delim = "&"){
