@@ -163,7 +163,7 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
   	$eventID = 1;
   	$activeStatus = 1;
   	$playerRole = '1';
-  	$groupType = '%4%5%'; //@todo
+  	$groupType = '%4%'; //@todo
 
   	$params = array(
   			1 => array($eventID, 'Integer'),
