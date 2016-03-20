@@ -78,6 +78,169 @@ class Team extends CRM_Contact_BAO_Group {
 	}
 	
 	/**
+	 * Make sure that the user has permission to access this team.
+	 *
+	 * @param int $id
+	 *   The id of the object.
+	 * @param bool $excludeHidden
+	 *   Should hidden teams be excluded.
+	 *   Logically this is the wrong place to filter hidden groups out as that is
+	 *   not a permission issue. However, as other functions may rely on that defaulting to
+	 *   FALSE for now & only the api call is calling with true.
+	 *
+	 * @return array
+	 *   The permission that the user has (or NULL)
+	 */
+	public static function checkPermission($id, $excludeHidden = FALSE) {
+		$allGroups = CRM_Core_PseudoConstant::allGroup(NULL, $excludeHidden);
+	
+		$permissions = NULL;
+		if (CRM_Core_Permission::check('edit all contacts') ||
+				CRM_ACL_API::groupPermission(CRM_ACL_API::EDIT, $id, NULL,
+						'civicrm_saved_search', $allGroups
+				)
+		) {
+			$permissions[] = CRM_Core_Permission::EDIT;
+		}
+	
+		// 		if (CRM_Core_Permission::check('view all contacts') ||
+		// 				CRM_ACL_API::groupPermission(CRM_ACL_API::VIEW, $id, NULL,
+		// 						'civicrm_saved_search', $allGroups
+		// 				)
+		// 		) {
+		// 			$permissions[] = CRM_Core_Permission::VIEW;
+		// 		}
+		$permissions[] = CRM_Core_Permission::VIEW;
+	
+		if (!empty($permissions) && CRM_Core_Permission::check('delete contacts')) {
+			// Note: using !empty() in if condition, restricts the scope of delete
+			// permission to groups/contacts that are editable/viewable.
+			// We can remove this !empty condition once we have ACL support for delete functionality.
+			$permissions[] = CRM_Core_Permission::DELETE;
+		}
+	
+		return $permissions;
+	}
+	
+	
+	/**
+	 * Generate permissioned where clause for team search.
+	 * @param array $params
+	 * @param bool $sortBy
+	 * @param bool $excludeHidden
+	 *
+	 * @return string
+	 */
+	public static function whereClause(&$params, $sortBy = TRUE, $excludeHidden = TRUE) {
+		$values = array();
+		$title = CRM_Utils_Array::value('title', $params);
+		if ($title) {
+			$clauses[] = "groups.title LIKE %1";
+			if (strpos($title, '%') !== FALSE) {
+				$params[1] = array($title, 'String', FALSE);
+			}
+			else {
+				$params[1] = array($title, 'String', TRUE);
+			}
+		}
+	
+		$groupType = CRM_Utils_Array::value('group_type', $params);
+		if ($groupType) {
+			$types = explode(',', $groupType);
+			if (!empty($types)) {
+				$clauses[] = 'groups.group_type LIKE %2';
+				$typeString = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $types) . CRM_Core_DAO::VALUE_SEPARATOR;
+				$params[2] = array($typeString, 'String', TRUE);
+			}
+		}
+	
+		$visibility = CRM_Utils_Array::value('visibility', $params);
+		if ($visibility) {
+			$clauses[] = 'groups.visibility = %3';
+			$params[3] = array($visibility, 'String');
+		}
+	
+		$groupStatus = CRM_Utils_Array::value('status', $params);
+		if ($groupStatus) {
+			switch ($groupStatus) {
+				case 1:
+					$clauses[] = 'groups.is_active = 1';
+					$params[4] = array($groupStatus, 'Integer');
+					break;
+	
+				case 2:
+					$clauses[] = 'groups.is_active = 0';
+					$params[4] = array($groupStatus, 'Integer');
+					break;
+	
+				case 3:
+					$clauses[] = '(groups.is_active = 0 OR groups.is_active = 1 )';
+					break;
+			}
+		}
+	
+		$parentsOnly = CRM_Utils_Array::value('parentsOnly', $params);
+		if ($parentsOnly) {
+			$clauses[] = 'groups.parents IS NULL';
+		}
+	
+		// only show child groups of a specific parent group
+		$parent_id = CRM_Utils_Array::value('parent_id', $params);
+		if ($parent_id) {
+			$clauses[] = 'groups.id IN (SELECT child_group_id FROM civicrm_group_nesting WHERE parent_group_id = %5)';
+			$params[5] = array($parent_id, 'Integer');
+		}
+	
+		if ($createdBy = CRM_Utils_Array::value('created_by', $params)) {
+			$clauses[] = "createdBy.sort_name LIKE %6";
+			if (strpos($createdBy, '%') !== FALSE) {
+				$params[6] = array($createdBy, 'String', FALSE);
+			}
+			else {
+				$params[6] = array($createdBy, 'String', TRUE);
+			}
+		}
+	
+		if (empty($clauses)) {
+			$clauses[] = 'groups.is_active = 1';
+		}
+	
+		if ($excludeHidden) {
+			$clauses[] = 'groups.is_hidden = 0';
+		}
+	
+		$clauses[] = self::getPermissionClause();
+	
+		return implode(' AND ', $clauses);
+	}
+	
+	/**
+	 * Get permission relevant clauses.
+	 *
+	 * @param bool $force
+	 *
+	 * @return array
+	 */
+	public static function getPermissionClause($force = FALSE) {
+		static $clause = 1;
+		static $retrieved = FALSE;
+// 		if ((!$retrieved || $force) && !CRM_Core_Permission::check('view all contacts') && !CRM_Core_Permission::check('edit all contacts')) {
+// 			//get the allowed groups for the current user
+// 			$groups = CRM_ACL_API::group(CRM_ACL_API::VIEW);
+// 			if (!empty($groups)) {
+// 				$groupList = implode(', ', array_values($groups));
+// 				$clause = "groups.id IN ( $groupList ) ";
+// 			}
+// 			else {
+// 				$clause = '1 = 0';
+// 			}
+// 		}
+		$retrieved = TRUE;
+		return $clause;
+	}
+	
+	
+	/**
 	 * create a team description from competitions & players
 	 *
 	 * @param integer $teamID

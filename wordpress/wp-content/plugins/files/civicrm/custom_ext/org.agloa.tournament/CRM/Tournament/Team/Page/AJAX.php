@@ -180,7 +180,7 @@ class CRM_Tournament_Team_Page_AJAX {
 	public static function getGroupList(&$params) {
 		$config = CRM_Core_Config::singleton();
 
-		$whereClause = CRM_Contact_BAO_Group::whereClause($params, FALSE);
+		$whereClause = Team::whereClause($params, FALSE);
 
 		//$this->pagerAToZ( $whereClause, $params );
 
@@ -250,7 +250,7 @@ class CRM_Tournament_Team_Page_AJAX {
 		$visibility = CRM_Core_SelectValues::ufVisibility();
 
 		while ($object->fetch()) {
-			$permission = CRM_Contact_BAO_Group::checkPermission($object->id, $object->title);
+			$permission = Team::checkPermission($object->id, $object->title);
 			//@todo CRM-12209 introduced an ACL check in the whereClause function
 			// it may be that this checking is now obsolete - or that what remains
 			// should be removed to the whereClause (which is also accessed by getCount)

@@ -185,7 +185,7 @@ function tournament_civicrm_navigationMenu(&$menu) {
 	_tournament_civix_insert_navigation_menu($menu, $path, array(
 			'label' => ts('Tournament Admins', array('domain' => $domain)),
 			'name' => $name,
-			'permission' => 'view all contacts',
+			'permission' => 'edit all contacts',
 			));
 	
 	$path = $name;
