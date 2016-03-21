@@ -490,6 +490,12 @@ function tournament_civicrm_xmlMenu(&$files) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function tournament_civicrm_install() {
+	//@todo derive tournament from event
+	//@todo derive player, coach, etc. from participant
+	//@todo derive school, district, league from organization and/or group
+	//@todo derive team from group
+	//@todo derive competition from sub-event
+	 
 	_tournament_civix_civicrm_install();
 }
 

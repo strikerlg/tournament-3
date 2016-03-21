@@ -425,7 +425,7 @@ class CRM_Tournament_Team_Page_AJAX {
 				),
 				CRM_Core_Action::DELETE => array(
 						'name' => ts('Delete'),
-						'url' => 'civicrm/group',
+						'url' => 'civicrm/tournament/team',
 						'qs' => 'reset=1&action=delete&id=%%id%%',
 						'title' => ts('Delete Team'),
 				),

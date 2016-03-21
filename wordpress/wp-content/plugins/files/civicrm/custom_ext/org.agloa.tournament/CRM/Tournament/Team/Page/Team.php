@@ -6,6 +6,7 @@
  * $Id$
  *
  */
+require_once 'Team.php';
 class CRM_Tournament_Team_Page_Team extends CRM_Core_Page_Basic {
   protected $_sortByCharacter;
 
@@ -85,7 +86,7 @@ class CRM_Tournament_Team_Page_Team extends CRM_Core_Page_Basic {
    *   the permission that the user has (or null)
    */
   public function checkPermission($id, $title) {
-    return CRM_Contact_BAO_Group::checkPermission($id, $title);
+    return Team::checkPermission($id, $title);
   }
 
   /**

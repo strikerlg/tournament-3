@@ -94,14 +94,16 @@ class Team extends CRM_Contact_BAO_Group {
 	public static function checkPermission($id, $excludeHidden = FALSE) {
 		$allGroups = CRM_Core_PseudoConstant::allGroup(NULL, $excludeHidden);
 	
-		$permissions = NULL;
-		if (CRM_Core_Permission::check('edit all contacts') ||
-				CRM_ACL_API::groupPermission(CRM_ACL_API::EDIT, $id, NULL,
-						'civicrm_saved_search', $allGroups
-				)
-		) {
-			$permissions[] = CRM_Core_Permission::EDIT;
-		}
+// 		$permissions = NULL;
+// 		if (CRM_Core_Permission::check('edit all contacts') ||
+// 				CRM_ACL_API::groupPermission(CRM_ACL_API::EDIT, $id, NULL,
+// 						'civicrm_saved_search', $allGroups
+// 				)
+// 		) {
+// 			$permissions[] = CRM_Core_Permission::EDIT;
+// 		}
+		
+		$permissions[] = CRM_Core_Permission::EDIT;
 	
 		// 		if (CRM_Core_Permission::check('view all contacts') ||
 		// 				CRM_ACL_API::groupPermission(CRM_ACL_API::VIEW, $id, NULL,
@@ -111,8 +113,9 @@ class Team extends CRM_Contact_BAO_Group {
 		// 			$permissions[] = CRM_Core_Permission::VIEW;
 		// 		}
 		$permissions[] = CRM_Core_Permission::VIEW;
-	
-		if (!empty($permissions) && CRM_Core_Permission::check('delete contacts')) {
+		
+		//if (!empty($permissions) && CRM_Core_Permission::check('delete contacts')) {
+		if (!empty($permissions) && CRM_Core_Permission::check('edit groups')) {
 			// Note: using !empty() in if condition, restricts the scope of delete
 			// permission to groups/contacts that are editable/viewable.
 			// We can remove this !empty condition once we have ACL support for delete functionality.
