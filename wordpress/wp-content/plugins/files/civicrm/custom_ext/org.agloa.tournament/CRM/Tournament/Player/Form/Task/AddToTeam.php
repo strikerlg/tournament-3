@@ -111,11 +111,13 @@ class CRM_Tournament_Player_Form_Task_AddToTeam extends CRM_Contact_Form_Task {
   	$aclGroups = get_aclGroups($contact_id);
   	$registrationGroups = get_registrationGroups($aclGroups);
   	
-  	$groups = "(";
-  	foreach ($registrationGroups as $group) $groups .= "{$group["id"]},";
-  	$groups = rtrim($groups, ",");
-  	$groups .= ")";
-  	$groupWhere = " group_id IN {$groups}";
+  	if (!CRM_Core_Permission::check('edit all contacts')){
+  		$groups = "(";
+  		foreach ($registrationGroups as $group) $groups .= "{$group["id"]},";
+  		$groups = rtrim($groups, ",");
+  		$groups .= ")";
+  		$groupWhere = " group_id IN {$groups}";
+  	}
   	
   	// Retrieve team games
   	$query = "SELECT entity_id AS ID, equations_21 AS E, on_sets_22 AS O, linguishtik_23 AS L, propaganda_24 AS P, presidents_25 AS M, world_events_26 AS A, wff_n_proof_27 AS W FROM civicrm_value_team_data_7 AS team_games WHERE `entity_id` = %1";

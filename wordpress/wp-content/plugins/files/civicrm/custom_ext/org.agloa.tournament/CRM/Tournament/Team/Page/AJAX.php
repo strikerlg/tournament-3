@@ -52,7 +52,8 @@ class CRM_Tournament_Team_Page_AJAX {
 			
 			// restrict to teams logged in user may access
 			$contact = billing_contact_get(); //@todo remove for admin
-			$params['created_by'] = $contact['sort_name'];
+			if (!CRM_Core_Permission::check('edit all contacts'))
+				$params['created_by'] = $contact['sort_name'];
 
 			// get team list
 			$groups = self::getTeamListSelector($params);
